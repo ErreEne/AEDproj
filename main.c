@@ -36,8 +36,6 @@ int main(int argc, char *argv)
         }
     }
 
-    //Falar com o prof sobre o uso de tantas variaveis
-
     while (1)
     {
         aux = fscanf(fp, " %d %d %d %d %s %d", li, ci, c1i, c2i, tj, npi);
@@ -91,6 +89,11 @@ void A1(int **tabuleiro, int l1i, int c1i, FILE *fp, int li, int ci){
         //peça cinzenta
     }
 }
+}
+//Procurar o tipo de peça, ou seja, a2/a3/a4
+void peepee(int **tabuleiro, int l1i, int c1i, int li, int ci, char tj[2]){
+
+    
 
 
 }
