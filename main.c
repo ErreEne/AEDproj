@@ -91,7 +91,7 @@ void A1(int **tabuleiro, int l1i, int c1i, FILE *fp, int li, int ci){
 }
 }
 //Procurar o tipo de peça, ou seja, a2/a3/a4
-void peepee(int **tabuleiro, int l1i, int c1i, int li, int ci, char tj[2]){
+void procura(int **tabuleiro, int l1i, int c1i, int li, int ci, char tj[2]){
 
     
 
@@ -103,3 +103,4 @@ void peepee(int **tabuleiro, int l1i, int c1i, int li, int ci, char tj[2]){
     /*for (i = 0; i < c; i++)
         tabuleiro[i] = (int*)calloc(c,sizeof(int));*/
 
+/*A6 = Se ponto de partida - branca ->inicializar a -2. Correr algoritmo de procura e escolher uma peça branca. Ponto de chegada? Não então colocar -2. Repetir processo até ponto de chegada. Chega ao ponto de chegada, usar variavel auxiliar para saber que podem estar na mesma sala. Exit.*/
