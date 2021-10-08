@@ -12,7 +12,7 @@ Correr algoritmo de procura e escolher uma peça branca.
 Ponto de chegada? Não então colocar -2. Repetir processo até ponto de chegada. 
 Chega ao ponto de chegada, usar variavel auxiliar para saber que podem estar na mesma sala. Exit.*/
 
-void A1(int **tabuleiro, int l1i, int c1i, int li, int ci){
+void A1(double **tabuleiro, int l1i, int c1i, int li, int ci){
     //ver se pertence ao tabuleiro
     if(l1i-1 < 0 || c1i-1 < 0 || l1i-1 > li || c1i-1>ci ){
         //Não pertence no fodendo tabuleiro
@@ -34,41 +34,50 @@ void A1(int **tabuleiro, int l1i, int c1i, int li, int ci){
 }
 
 
-void procura(int **tabuleiro, int l1i, int c1i, int li, int ci, char tj[3]){
+void procura(double **tabuleiro, int l1i, int c1i, int li, int ci, char tj[3]){
 
 int aux = tj[1] - 48, id[9]={0},aux1, i=0;
-
+    if(l1i-1 < 0 || c1i-1 < 0 || l1i-1 > li || c1i-1>ci ){
+        //Não pertence no fodendo tabuleiro
+        printf("mete essa merda no tabuleiro\n");
+        exit(0);
+    }
+    for (i = 0; i <= 8; i++)
+    {
+        id[i] = -2;
+    }    
 
 switch (aux)
 {
 case 2:
     printf("entrei");
     //exit(0);
-    if(l1i-1 < 0 || c1i-1 < 0 || l1i-1 > li || c1i-1>ci ){
-        //Não pertence no fodendo tabuleiro
-        printf("mete essa merda no tabuleiro\n");
-        exit(0);
-    }else{
-    for (aux = -1; aux <= 1; aux++)
-    {   if(l1i-1 < 0 || c1i-1 < 0 || l1i-1 > li || c1i-1>ci ){
-        //Não pertence no fodendo tabuleiro
-        printf("mete essa merda no tabuleiro\n");
-        //exit(0);
-    }else{
-        for (aux1 = -1; aux <= 1; aux1++, i++)
-        {
-            id[i] = tabuleiro[l1i - aux][c1i - aux1];
+    for (aux = -1, i = 0; aux <= 1; aux++){
+        if( l1i + aux - 1 < 0 || l1i + aux - 1 > li){
+            aux++;
+            i+=3;
+            printf("loop\n");
         }
+        for (aux1 = -1; aux1 <= 1; aux1++, i++)
+        {
+            if(c1i + aux1 - 1 < 0 || c1i + aux1 - 1 > ci){
+              //fica quietinho
+            }else{
+            id[i] = tabuleiro[l1i - 1 + aux][c1i - 1 + aux1];
+        }
+        }
+
         
-    }    
     }
-    }printf("sad");
-    exit(0);
-    
+    //exit(0);
+            for (i = 0; i < 8; i++)
+        {
+            printf("%d", id[i]);
+        }
     for (aux = 0; aux < 9; aux+=2)
     {
        if(id[aux] == 0){
-
+           printf("ola");
            //é vizinha branca
 
        }else{
@@ -76,9 +85,10 @@ case 2:
            //não é vizinha branca
        } 
     }
-    
-
+    printf("oi?\n");
+    //exit(0);
     break;
+
 case 3:
 
     for (aux = -1; aux <= 1; aux++)
@@ -106,6 +116,7 @@ case 3:
     
 
     break;
+
 case 4:
     for (aux = -1; aux <= 1; aux++)
     {
@@ -147,7 +158,8 @@ int main(int argc, char *argv[])
 {
 
     /*l-linha, c-coluna, c1-Primeira Cordenada, c2-Segunda Cordenada, tj-Tipo de Jogo, np-Número de paças, tp- Tipo de Peça */
-    int li = 0, ci = 0, c1i = 0, c2i = 0, npi = 0, tpi = 0, i = 0, **tabuleiro,tja;
+    int li = 0, ci = 0, c1i = 0, c2i = 0, npi = 0, tpi = 0, i = 0, tja;
+    double **tabuleiro;
     char tj[3]={""};
     int opt = 0, flag, aux = 0, aux1=0,loop=1;
     char filename[40] = {""};
@@ -187,10 +199,10 @@ int main(int argc, char *argv[])
         {   printf("dshbfzajn\n");
             aux=li;
             aux1=ci;
-           tabuleiro = (int **)calloc(li, sizeof(int *));
+           tabuleiro = (double **)calloc(li, sizeof(double *));
             for (i = 0; i < li; ++i)
             {
-                tabuleiro[i] = (int *)calloc(ci, sizeof(int));
+                tabuleiro[i] = (double *)calloc(ci, sizeof(double));
             }
         }
         for (i = 0; i < npi; i++)
@@ -201,6 +213,8 @@ int main(int argc, char *argv[])
         }
     tja = tj[1]-48;
     printf("\n%d\n", tja);
+    
+
     switch (tja)
     {
     case 1:
@@ -210,6 +224,7 @@ int main(int argc, char *argv[])
     case 2:
         printf("sheesh\n");
         procura(tabuleiro,c1i, c2i, li, ci, tj);
+        printf("saí");
         break;
     default:
         break;
