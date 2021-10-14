@@ -122,34 +122,31 @@ default:
 
 return 0;
 }
-void A6(int *id, int li, int ci, int l1i, int c1i, int l2i, int c2i){
-int aux, aux1, *sz;
-/*while(1){
-/*for(aux=-ci; aux<=ci; aux+=ci)
+void A6(int **tabela, int li, int ci, int l1i, int c1i, int l2i, int c2i){
+int aux, aux1, *sz,i,j,p,q,*id;
+sz=(int*)malloc(li*ci*sizeof(int));
+id=(int*)malloc(li*ci*sizeof(int));
+
+for (aux = 0; aux < li*ci; aux++)
 {
-    if(0==aux){
-
-    if ((aux%ci != 0 || aux%(ci-1) != 0)/*condição de não ser na ponta)
-    /*{
-        for (aux1 = -1; aux1 <= 1; aux+=2)
-        {
-            if (id[(l1i-1)*ci + c1i + aux1] == 0)
-            {
-                /* conectar(?) e mudar o c1i e l1i */
-           /* }
-            
-        }
-        
-    }
-    
-
-    }else if(aux>0){
-
-    }else if(aux<0){
-
-    }
-}*/
-/*}*/
+    id[i]=i;
+    sz[i]=1;
+}
+      for (i = 0; i < li; i++)
+      {
+          for (j = 0; j < ci; j++)
+          {
+              
+          
+          
+        if(tabela[i][j]==tabela[i-1][j] && i-1 > 0)p=(i-1)*ci+j, q=i*ci + j;
+        if(tabela[i][j]==tabela[i+1][j] && i+1 < li)p=(i+1)*ci+j, q=i*ci + j;
+        if(tabela[i][j]==tabela[i][j-1] && j-1 > 0)p=i*ci+j-1, q=i*ci + j;
+        if(tabela[i][j]==tabela[i][j+1] && j+1 < ci)p=i*ci+j+1, q=i*ci + j;
+          }
+}
+   free(id);
+   free(sz);
 }
 /*void FazerFicheiro(){
 
@@ -164,16 +161,14 @@ int main(int argc, char *argv[])
 {
 
     /*l-linha, c-coluna, c1-Primeira Cordenada, c2-Segunda Cordenada, tj-Tipo de Jogo, np-Número de paças, tp- Tipo de Peça */
-    int li = 0, ci = 0, c1i = 0, l1i = 0, npi = 0, tpi = 0, i = 0, tja, solu, *id, l2i = 0, c2i = 0;
+    int li = 0, ci = 0, c1i = 0, l1i = 0, npi = 0, tpi = 0, i = 0, tja , solu, *id, l2i = 0, c2i = 0;
     int **tabuleiro;
     char tj[3]={""};
     int opt = 0, flag, aux = 0, aux1=0,loop=1;
     char filename[40] = {""};
 
-    // char *filename;
-    //filename = (char* ) malloc(strlen(argv[2]) * sizeof(char) +1);
-
-    FILE *fp; /*ler ficheiro*/
+    FILE *fp; 
+    /*ler ficheiro*/
     
     /*if ((fp = fopen(filename, "r")) == NULL)
     {
@@ -214,10 +209,18 @@ int main(int argc, char *argv[])
         tja = li;
         aux1 = ci;
         fscanf(fp,"%d %d %d", &l2i, &c2i, &npi );
-        id = (int*)calloc(ci,sizeof(int));
-        for(aux=0; aux<npi; aux++){
+        
+            tabuleiro = (int **)calloc(li, sizeof(int *));
+            for (i = 0; i < li; ++i)
+            {
+                tabuleiro[i] = (int *)calloc(ci, sizeof(int));
+
+            }
+            
+        for (i = 0; i < npi; i++)
+        {  
             fscanf(fp, "%d %d %d", &li, &ci, &tpi);
-            id[(li-1)*10 + ci-1] = tpi;
+            tabuleiro[li - 1][ci - 1] = tpi;
         }
         
  
