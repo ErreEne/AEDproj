@@ -12,7 +12,7 @@ OBJECTS = main.o
 
 : prog 
 prog: $(OBJECTS)
-	$(CC) $(CFLAGS) -o roap $(PROJOBJECTS)
+	$(CC) $(CFLAGS) -o roap $(OBJECTS)
 
 # fileManipulation.o: fileManipulation.h fileManipulation.c gameAnalisys.h
 #	$(CC) -g -c fileManipulation.c
