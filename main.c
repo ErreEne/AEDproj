@@ -160,12 +160,12 @@ int A6(int **tabela, int li, int ci, int l1i, int c1i, int l2i, int c2i)
     {
         for (j = 0; j < ci; j++)
         {
-            if (i + 1 < li)
+            if (i - 1 >= 0)
             {
-                if (tabela[i][j] == tabela[i + 1][j] && tabela[i][j]==0)
+                if (tabela[i][j] == tabela[i - 1][j] && tabela[i][j]==0)
                 {
 
-                    p = (i + 1) * ci + j;
+                    p = (i - 1) * ci + j;
                     q = i * ci + j;
                     for (aux = p; aux != id[aux]; aux = id[aux])
                         ;
@@ -219,7 +219,11 @@ int A6(int **tabela, int li, int ci, int l1i, int c1i, int l2i, int c2i)
             }
         }
     }
-    
+    /*for (i = 0; i < li*ci; i++)
+    {
+        printf("%d\n",id[i]);
+    }*/
+    //exit(0);
     if (id[(l1i - 1) * ci + c1i - 1] == id[(l2i - 1) * ci + c2i - 1])
         return 1;
     return 0;
@@ -292,6 +296,16 @@ int main(int argc, char *argv[])
                 fscanf(fp, "%d %d %d", &li, &ci, &tpi);
                 tabuleiro[li - 1][ci - 1] = tpi;
             }
+            /*for (aux = 0; aux < li; aux++)
+            {
+                for (i = 0; i < ci; i++)
+                {
+                    printf("%d ", tabuleiro[aux][i]);
+                }
+                printf("\n");
+                
+            }*/
+            
             
             li = tja;
             ci = aux1;
