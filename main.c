@@ -356,7 +356,7 @@ int main(int argc, char *argv[])
             {
             case 1:
                 solu = A1(tabuleiro, l1i, c1i, li, ci);
-                printf("%d\n", solu);
+                fprintf(fpOut, "%d\n", solu);
                 break;
 
             case 2:
