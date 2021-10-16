@@ -128,7 +128,8 @@ int procura(int **tabuleiro, int l1i, int c1i, int li, int ci, char tj[3])
         break;
 
     case 5:
-        if(id[4] <= 0)return -1;
+        if (id[4] <= 0)
+            return -1;
         if ((id[1] == 0 && id[7] == 0) || (id[3] == 0 && id[5] == 0))
             return 1;
 
@@ -146,11 +147,11 @@ int A6(int **tabela, int li, int ci, int l1i, int c1i, int l2i, int c2i)
     int aux, aux1, *sz, i, j, p, q, *id;
     sz = (int *)malloc(li * ci * sizeof(int));
     id = (int *)malloc(li * ci * sizeof(int));
-    if (c1i - 1 < 0 || c1i > ci || l1i-1<0 || l1i>li || c2i - 1 < 0 || c2i > ci || l2i-1<0 || l2i>li)
+    if (c1i - 1 < 0 || c1i > ci || l1i - 1 < 0 || l1i > li || c2i - 1 < 0 || c2i > ci || l2i - 1 < 0 || l2i > li)
     {
         return -2;
     }
-    
+
     for (aux = 0; aux < li * ci; aux++)
     {
         id[aux] = aux;
@@ -162,7 +163,7 @@ int A6(int **tabela, int li, int ci, int l1i, int c1i, int l2i, int c2i)
         {
             if (i - 1 >= 0)
             {
-                if (tabela[i][j] == tabela[i - 1][j] && tabela[i][j]==0)
+                if (tabela[i][j] == tabela[i - 1][j] && tabela[i][j] == 0)
                 {
 
                     p = (i - 1) * ci + j;
@@ -173,25 +174,25 @@ int A6(int **tabela, int li, int ci, int l1i, int c1i, int l2i, int c2i)
                         ;
                     if (aux == aux1)
                     {
-                       
-                    }else{
-                    if (sz[aux] < sz[aux1])
-                    {
-                        id[aux] = aux1;
-                        sz[aux1] += sz[aux];
                     }
                     else
                     {
-                        id[aux1] = aux;
-                        sz[aux] += sz[aux1];
+                        if (sz[aux] < sz[aux1])
+                        {
+                            id[aux] = aux1;
+                            sz[aux1] += sz[aux];
+                        }
+                        else
+                        {
+                            id[aux1] = aux;
+                            sz[aux] += sz[aux1];
+                        }
                     }
-                    }
-                    
                 }
             }
             if (j - 1 >= 0)
             {
-                if (tabela[i][j] == tabela[i][j - 1] && tabela[i][j]==0)
+                if (tabela[i][j] == tabela[i][j - 1] && tabela[i][j] == 0)
                 {
 
                     p = i * ci + j - 1;
@@ -202,18 +203,19 @@ int A6(int **tabela, int li, int ci, int l1i, int c1i, int l2i, int c2i)
                         ;
                     if (aux == aux1)
                     {
-                        
-                    }else{
-                    if (sz[aux] < sz[aux1])
-                    {
-                        id[aux] = aux1;
-                        sz[aux1] += sz[aux];
                     }
                     else
                     {
-                        id[aux1] = aux;
-                        sz[aux] += sz[aux1];
-                    }
+                        if (sz[aux] < sz[aux1])
+                        {
+                            id[aux] = aux1;
+                            sz[aux1] += sz[aux];
+                        }
+                        else
+                        {
+                            id[aux1] = aux;
+                            sz[aux] += sz[aux1];
+                        }
                     }
                 }
             }
@@ -245,32 +247,51 @@ int main(int argc, char *argv[])
     /*l-linha, c-coluna, c1-Primeira Cordenada, c2-Segunda Cordenada, tj-Tipo de Jogo, np-Número de paças, tp- Tipo de Peça */
     int li = 0, ci = 0, c1i = 0, l1i = 0, npi = 0, tpi = 0, i = 0, tja, solu, l2i = 0, c2i = 0, opt = 0, flag, aux = 0, aux1 = 0, **tabuleiro;
     char tj[3] = {""};
-    char filename[40] = {""};
+    char *FileIn, *FileOut;
+    char *temp;
+    char extOut[] = ".sol1";
+    FILE *fpIn, *fpOut;
 
-    FILE *fp;
-    /*criar função "ler ficheiro"*/
+    FileIn = argv[2];
+    FileOut = (char *)malloc(sizeof(char) * (strlen(argv[2]) + 5));
+
+    strcpy(FileOut, FileIn);
+    temp = strchr(FileOut, '.');
+    *temp = '\0';
+    strcat(FileOut, ".sol1");
+    printf("%s", FileOut);
+
+    fpIn = fopen(FileIn, "r");
+
+    if (fpIn == NULL)
+        exit(0);
+
     while ((opt = getopt(argc, argv, "s:")) != -1)
     {
         switch (opt)
         {
         case 's':
-            sscanf(optarg, " %s", filename);
-            if (filename[strlen(filename) - 1] == '1')
+            sscanf(optarg, " %s", FileIn);
+            if (FileIn[strlen(FileIn) - 1] == '1')
                 // FLAG QUE ATIVA A LEITURA DO FICHEIRO .in1
                 flag = 0; // por exemplo, depois mudar o nome
             break;
         }
     }
 
-    fp = fopen(filename, "r");
-    if ((fp = fopen(filename, "r")) == NULL)
+    fpIn = fopen(FileIn, "r");
+    if ((fpIn = fopen(FileIn, "r")) == NULL)
     {
-        // exit(0);
+        exit(0);
     }
+
+    fpOut = fopen(FileOut, "w");
+    if (fpOut == NULL)
+        exit(0);
 
     while (1)
     {
-        aux = fscanf(fp, "%d %d %d %d %s", &li, &ci, &l1i, &c1i, tj);
+        aux = fscanf(fpIn, "%d %d %d %d %s", &li, &ci, &l1i, &c1i, tj);
         if (aux != 5)
             break;
 
@@ -283,7 +304,7 @@ int main(int argc, char *argv[])
             tja = li;
             aux1 = ci;
 
-            fscanf(fp, "%d %d %d", &l2i, &c2i, &npi);
+            fscanf(fpIn, "%d %d %d", &l2i, &c2i, &npi);
 
             tabuleiro = (int **)calloc(li, sizeof(int *));
             for (i = 0; i < li; ++i)
@@ -293,7 +314,7 @@ int main(int argc, char *argv[])
 
             for (i = 0; i < npi; i++)
             {
-                fscanf(fp, "%d %d %d", &li, &ci, &tpi);
+                fscanf(fpIn, "%d %d %d", &li, &ci, &tpi);
                 tabuleiro[li - 1][ci - 1] = tpi;
             }
             /*for (aux = 0; aux < li; aux++)
@@ -305,18 +326,16 @@ int main(int argc, char *argv[])
                 printf("\n");
                 
             }*/
-            
-            
+
             li = tja;
             ci = aux1;
             solu = A6(tabuleiro, li, ci, l1i, c1i, l2i, c2i);
             printf("%d\n", solu);
-            
         }
         else
         {
 
-            fscanf(fp, "%d", &npi);
+            fscanf(fpIn, "%d", &npi);
             aux = li;
             aux1 = ci;
             tabuleiro = (int **)calloc(li, sizeof(int *));
@@ -327,7 +346,7 @@ int main(int argc, char *argv[])
 
             for (i = 0; i < npi; i++)
             {
-                fscanf(fp, "%d %d %d", &li, &ci, &tpi);
+                fscanf(fpIn, "%d %d %d", &li, &ci, &tpi);
                 tabuleiro[li - 1][ci - 1] = tpi;
             }
 
@@ -358,5 +377,6 @@ int main(int argc, char *argv[])
 
         free(tabuleiro);
     }
-    fclose(fp);
+    fclose(fpIn);
+    fclose(fpOut);
 }
