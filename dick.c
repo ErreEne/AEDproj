@@ -17,7 +17,7 @@ struct LinkedListStruct
 {
     int vertice;
     LinkedList *next;
-    Item custo;
+    int custo;
 };
 
 void GRAPHpfs(Grafo *G, int s, int st[], int wt[], int *queue, int espaco)
@@ -38,7 +38,7 @@ void GRAPHpfs(Grafo *G, int s, int st[], int wt[], int *queue, int espaco)
     {
         v = PQdelmin(queue, espaco, wt);
         for (t = G->adj[v]; t != NULL; t = t->next)
-            if (wt[w = t->vertice] > wt[v] + *(int *)t->custo)
+            if (wt[w = t->vertice] > wt[v] + t->custo)
             {
                 //
                 if (wt[w] == __INT_MAX__)
@@ -46,7 +46,7 @@ void GRAPHpfs(Grafo *G, int s, int st[], int wt[], int *queue, int espaco)
                     PQinsert(w, queue, espaco, wt);
                 }
                 //
-                wt[w] = wt[v] + *(int *)t->custo; // guardar custo
+                wt[w] = wt[v] + t->custo; // guardar custo
 
                 for (int i = 0; i < espaco; i++)
                 {
