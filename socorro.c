@@ -18,7 +18,7 @@ struct LinkedListStruct
 {
     int vertice;
     LinkedList *next;
-    Item custo;
+    int custo;
 };
 
 Grafo *criargarph(int salas, Grafo *estr)
@@ -35,7 +35,7 @@ Grafo *criargarph(int salas, Grafo *estr)
     return estr;
 }
 
-void criarligacao(Grafo *estr, int vertice1, int vertice2, Item custo)
+void criarligacao(Grafo *estr, int vertice1, int vertice2, int custo)
 {
 
     LinkedList *aux, *aux1;
