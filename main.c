@@ -4,14 +4,15 @@
 #include <string.h>
 #include <getopt.h>
 
-#include "cabecinha.h"
+#include "header.h"
 /******************************************************************************
  *
  * NAME
  *   main.c
  *
  * DESCRIPTION
- *
+ *  Realiza a abertura e o fecho do ficheiro. Faz a troca de extensão
+ do ficheiro de entrada para o ficheiro de saida. Leitura do argumento -s
  *
  * COMMENTS
  *
@@ -24,15 +25,19 @@ int main(int argc, char *argv[])
     char *FileIn, *FileOut;
     char *temp;
     FILE *fpIn, *fpOut;
-
+    /*Aloca espaço para o nome dos ficheiros*/
     FileIn = (char *)malloc(sizeof(char) * (strlen(argv[2]) + 1));
+    if (FileIn == NULL)
+        exit(-1);
     strcpy(FileIn, argv[2]);
     FileOut = (char *)malloc(sizeof(char) * (strlen(argv[2]) + 2));
+    if (FileOut == NULL)
+        exit(-1);
 
     strcpy(FileOut, FileIn);
     temp = strrchr(FileOut, '.');
     *temp = '\0';
-    strcat(FileOut, ".sol2");
+    strcat(FileOut, ".sol2"); /*Extensão da solução*/
     fpIn = fopen(FileIn, "r");
 
     if (fpIn == NULL)
@@ -49,7 +54,7 @@ int main(int argc, char *argv[])
         {
         case 's':
             sscanf(optarg, " %s", FileIn);
-            if (FileIn[strlen(FileIn) - 1] == '1')
+            if (FileIn[strlen(FileIn) - 1] == 'n')
                 break;
         }
     }
@@ -63,8 +68,7 @@ int main(int argc, char *argv[])
         free(FileOut);
         exit(0);
     }
-    modosDeJogo(fpIn, fpOut);
-    fclose(fpIn);
+    modosDeJogo(fpIn, fpOut); /*Chama a função que inicia o tabuleiro e decide os modos de jogo*/
     fclose(fpOut);
     free(FileIn);
     free(FileOut);
