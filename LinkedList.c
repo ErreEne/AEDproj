@@ -36,7 +36,7 @@ struct LinkedListStruct
 {
     int vertice;
     LinkedList *next;
-    Item custo;
+    int custo;
 };
 
 /*
