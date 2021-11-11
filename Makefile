@@ -1,2 +1,22 @@
-roap: main.c
-	gcc	-Wall	-std=c99	-g	main.c	header.h defs.h	modos.c	tabuleiro.c	socorro.c LinkedList.c LinkedList.h queueue.c dijk.c -o	roap
+# escolha compilador
+CC= gcc
+# flags de compilação
+CFLAGS= -Wall -std=c11 -g
+# gerar variaveis 
+SRCS=$(wildcard *.c)
+OBJS=$(patsubst %.c, %.o, $(SRCS))
+HEADERS=$(wildcard *.h)
+# nome do executavel
+TARGET= roap
+
+# opção 'make' geral
+all: $(TARGET)
+
+$(TARGET): $(OBJS) Makefile
+# apaga o executavel antigo, compila e gera o executavel e posteriormente apaga todos os .o files
+	rm -f $(TARGET)
+	$(CC) $(CFLAGS) $(OBJS) -o $@
+	rm -f *.o
+
+%.o: %.c $(HEADERS) Makefile
+	$(CC) -c $(CFLAGS) -o $@ $<
