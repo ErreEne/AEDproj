@@ -21,16 +21,23 @@
 int main(int argc, char *argv[])
 {
 
-    int opt = 0;
-    char *FileIn, *FileOut;
+    if (argc != 2)
+        exit(0);
+    char *FileIn = '\0', *FileOut = '\0';
     char *temp;
-    FILE *fpIn, *fpOut;
+    FILE *fpIn = NULL, *fpOut = NULL;
+    int lenght = strlen(argv[1]);
+    if (strlen(argv[1]) < 3)
+        exit(0);
+    if ((argv[1][lenght - 1]) != 'n' || (argv[1][lenght - 2]) != 'i' || (argv[1][lenght - 3]) != '.')
+        exit(0);
     /*Aloca espaço para o nome dos ficheiros*/
-    FileIn = (char *)malloc(sizeof(char) * (strlen(argv[2]) + 1));
+    FileIn = (char *)malloc(sizeof(char) * (lenght + 1));
+
     if (FileIn == NULL)
         exit(0);
-    strcpy(FileIn, argv[2]);
-    FileOut = (char *)malloc(sizeof(char) * (strlen(argv[2]) + 2));
+    strcpy(FileIn, argv[1]);
+    FileOut = (char *)malloc(sizeof(char) * (strlen(FileIn) + 2));
     if (FileOut == NULL)
         exit(0);
 
@@ -42,27 +49,15 @@ int main(int argc, char *argv[])
 
     if (fpIn == NULL)
     {
-
         free(FileIn);
         free(FileOut);
 
         exit(0);
     }
-    while ((opt = getopt(argc, argv, "s:")) != -1)
-    {
-        switch (opt)
-        {
-        case 's':
-            sscanf(optarg, " %s", FileIn);
-            if (FileIn[strlen(FileIn) - 1] == 'n')
-                break;
-        }
-    }
 
     fpOut = fopen(FileOut, "w");
     if (fpOut == NULL)
     {
-
         fclose(fpIn);
         free(FileIn);
         free(FileOut);
