@@ -82,8 +82,7 @@ void criartabuleiro(FILE *fpIn, FILE *fpOut)
             exit(0);
         if (l2i - 1 < 0 || c2i - 1 < 0 || l2i > li || c2i > ci || li <= 0 || ci <= 0) /*verifica se as peças estão no tabuleiro*/
         {
-            solu = -2;
-            fprintf(fpOut, "%d\n\n", solu);
+            fprintf(fpOut, "-1\n");
             for (i = 0; i < npi; i++)
             {
                 if ((fscanf(fpIn, "%d %d %d", &li, &ci, &tpi) != 3)) /*Faz uma leitura do ficheiro para poder prosseguir para o proximo tabuleiro*/
@@ -111,19 +110,9 @@ void criartabuleiro(FILE *fpIn, FILE *fpOut)
             }
             li = tja;
             ci = aux1;
-            id = (int *)malloc(li * ci * sizeof(int));
-            if (id == NULL)
-                exit(0);
-            id = soupintor(tabuleiro, li, ci, id); /*Chama a função que retorna a solução do A6*/
-
-            salascounter = salascounters(tabuleiro, id, li, ci);
-            for (salachegada = (l2i - 1) * ci + c2i - 1; salachegada >= 0; salachegada = id[salachegada])
-                ;
-
-            free(id);
-            if (salachegada == -2)
+            if (tabuleiro[l2i - 1][c2i - 1] > 0 || tabuleiro[l2i - 1][c2i - 1] == -1)
             {
-                fprintf(fpOut, "%d", 0);
+                fprintf(fpOut, "-1\n");
                 for (i = 0; i < li; i++)
                 {
                     free(tabuleiro[i]);
@@ -133,9 +122,32 @@ void criartabuleiro(FILE *fpIn, FILE *fpOut)
             else
             {
 
-                salachegada = -salachegada - 2;
-                salas = -salascounter - 1;
-                grafotime(salas, tabuleiro, li, ci, salachegada, fpOut);
+                id = (int *)malloc(li * ci * sizeof(int));
+                if (id == NULL)
+                    exit(0);
+                id = soupintor(tabuleiro, li, ci, id); /*Chama a função que retorna a solução do A6*/
+
+                salascounter = salascounters(tabuleiro, id, li, ci);
+                for (salachegada = (l2i - 1) * ci + c2i - 1; salachegada >= 0; salachegada = id[salachegada])
+                    ;
+
+                free(id);
+                if (salachegada == -2)
+                {
+                    fprintf(fpOut, "%d\n", 0);
+                    for (i = 0; i < li; i++)
+                    {
+                        free(tabuleiro[i]);
+                    }
+                    free(tabuleiro);
+                }
+                else
+                {
+
+                    salachegada = -salachegada - 2;
+                    salas = -salascounter - 1;
+                    grafotime(salas, tabuleiro, li, ci, salachegada, fpOut);
+                }
             }
         }
         fprintf(fpOut, "\n");
