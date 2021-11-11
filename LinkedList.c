@@ -1,22 +1,12 @@
 /******************************************************************************
- * (c) 2018-2019 AED Team
- * Last modified: abl 2019-03-17
- *
  * NAME
  *      LinkedList.c
  *
  * DESCRIPTION
- *      Implementation of an abstract Linked List
- *
- * COMMENTS
- *      (Derived from 2018/10/24 lab4 code)
+ *      Implementação de uma Linked List
  *
  *  Implementation details:
- *      Linked list node: Each node of the list contains an item and a
- *      pointer to the next node.
- *      The item is specified in the file defs.h, expectably also a pointer.
- *
- *      Item deletion/freeing and comparison functions must be supplied
+ *      Nó da lista:  Cada nó da lista tem um item e um pointer que aponta para o próximo nó.
  *
  *****************************************************************************/
 
@@ -26,31 +16,37 @@
 #include "LinkedList.h"
 
 /*
- *  Data Type: LinkedListStruct
+ *  Tipo de dados: LinkedListStruct
  *
- *  Description: Structure with:
- *      1) Item of the linked list node (possibly pointer to data)
- *      2) Pointer to next node of the linked list.
+ *  Descrição: Estrutura com:
+ *      1) Vértices: Números de salas
+ *      2) Pointer para o próximo nó
+ *      3) Custo
+ *      4) Linha com o menor custo
+ *      5) Coluna com o menor custo
+ *
  */
 struct LinkedListStruct
 {
     int vertice;
     LinkedList *next;
     int custo;
+    int linhamc;
+    int colunamc;
 };
 
 /*
- *  Function:
+ *  Função:
  *    initLinkedList
  *
- *  Description:
- *    Initializes a new linked list.
+ *  Descrição:
+ *    Inicializa a Linked List
  *
- *  Arguments:
- *    None
+ *  Argumentos:
+ *    Nenhum
  *
- *  Return value:
- *    Returns the pointer to a new linked list.
+ *  Retorna:
+ *      Retorna um pointeiro para a nova linked list
  */
 LinkedList *initLinkedList(void)
 {
@@ -58,62 +54,71 @@ LinkedList *initLinkedList(void)
 }
 
 /*
- *  Function:
- *    freeLinkedList
+ *  Função:
+ *    getcustoLinkedList
  *
- *  Description:
- *    Frees the memory allocated to a linked list.
+ *  Descrição:
  *
- *  Arguments:
- *    Pointer to the first element of a linked list:
- *      (LinkedList *) first
- *    Function to free the memory allocated to the items:
- *      void freeItem(Item)
  *
- *  Return value:
- *    None
+ *  Argumentos:
+ *      Ponteiro para o nó atual onde estamos (LinkedList *) node
+ *
+ *  Retorna:
+ *      Retorna o ponteiro para o nó onde está o custo
  */
-Item getcustoLinkedList(LinkedList *node)
+int getcustoLinkedList(LinkedList *node)
 {
     if (node == NULL) /* Check that node is not empty */
-        return NULL;
+        return 0;
 
     return node->custo;
 }
-void freeLinkedList(LinkedList *first, void (*freeItemFnt)(Item))
+/*
+ *  Função:
+ *    freeLinkedList
+ *
+ *  Descrição:
+ *    Liberta a memória alocada na lista
+ *
+ *  Argumentos:
+ *    Pointeiro para o primeiro elemento da lista: (LinkedList *) first
+ *    Função que liberta a memória alocada nos items: void freeItem(Item)
+ *
+ *  Retorna:
+ *      Nenhum
+ */
+void freeLinkedList(LinkedList *first)
 {
     LinkedList *aux, *next;
 
-    /* Cycle from the first to the last element           */
+    /* Ciclo desde o primeiro ao ultimo elemento           */
     for (aux = first; aux != NULL; aux = next)
     {
-        next = aux->next;        /* Keep track of the next node */
-        freeItemFnt(aux->custo); /* Free current item data with passed function */
-        free(aux);               /* Free current node    */
+        next = aux->next; /* Vê o próximo nó */
+        free(aux);        /* Liberta o nó atual    */
     }
     return;
 }
 
 /*
- *  Function:
+ *  Função:
  *    lengthLinkedList
  *
- *  Description:
- *    Determines the length of a linked list.
+ *  Descrição
+ *    Determina o comprimento da lista
  *
- *  Arguments:
- *    Pointer to the first node of the linked list:
- *        (LinkedList *) first
+ *  Argumentos:
+ *    Ponteiro para o primeiro nó da lista (LinkedList *) first
  *
- *  Return value:
- *    Returns the length of the linked list.
+ *  Retorna:
+ *    Retorna o comprimento
  */
 int lengthLinkedList(LinkedList *first)
 {
     LinkedList *aux;
     int counter;
 
-    /* Length determination cycle                                   */
+    /* Ciclo que descobre o comprimento                                  */
     for (aux = first, counter = 0;
          aux != NULL;
          counter++, aux = aux->next)
@@ -123,20 +128,18 @@ int lengthLinkedList(LinkedList *first)
 }
 
 /*
- *  Function:
+ *  Função:
  *    getNextNodeLinkedList
  *
- *  Description:
- *    Returns the next node of a linked list.
+ *  Descrição:
+ *    Retorna o próximo nó da lista
  *
  *  Arguments:
- *    Pointer to the current linked list node:
- *        (LinkedList *) node
+ *    Ponteiro para o nó atual onde estamos (LinkedList *) node
  *
- *  Return value:
- *    Returns the pointer to the next node of a linked list. NULL
- *   is returned in case the current node is empty or there is no
- *   node following the current node.
+ *  Retorna:
+ *    Retorna o ponteiro para o próximo nó da lista.
+ *    Retorna NULL caso o nó atual está vazio ou não existe um nó aseguir
  */
 LinkedList *getNextNodeLinkedList(LinkedList *node)
 {
@@ -144,56 +147,50 @@ LinkedList *getNextNodeLinkedList(LinkedList *node)
 }
 
 /*
- *  Function:
+ *  Função:
  *    getItemLinkedList
  *
- *  Description:
- *    Gets the item of a linked list node.
+ *  Descrição:
+ *    Fica com o Item do nó da lista
  *
- *  Arguments:
- *    Pointer to a linked list node:
- *        (LinkedList *) node
+ *  Argumentos:
+ *    Ponteiro para o nó da lista
  *
- *  Return value:
- *    Returns the pointer to the item of a linked list node. NULL
- *   is returned if the node is NULL (or if the item is NULL).
+ *  Retorna:
+ *    Retorna o ponteiro para o item do nó da lista. Retorna NULL se o nó estiver vazio
+ *
  */
 int getItemLinkedList(LinkedList *node)
 {
-    if (node == NULL) /* Check that node is not empty */
+    if (node == NULL) /* Verifica se o nó não está vazio */
         return 0;
 
     return node->vertice;
 }
 
 /*
- *  Function:
+ *  Função:
  *    insertUnsortedLinkedList
  *
- *  Description:
- *    Creates a new node at the head of the linked list.
+ *  Descrição:
+ *    Cria um novo nó no inicio da lista.
  *
- *  Arguments:
- *    Item to associate to the new node:
+ *  Argumentos:
+ *    Item associado ao próximo nó: Item this.
  *      Item this
- *    Pointer to the next node:
- *      (LinkedList *) next
+ *    Ponteiro para o próximo nó: (LinkedList *) next
  *
- *  Return value:
- *    Returns the pointer to the new head of the list.
+ *  Retorna:
+ *    Retorna o ponteiro para o novo inicio da lista (head).
  */
 LinkedList *insertUnsortedLinkedList(LinkedList *next, int vertice)
 {
     LinkedList *new;
-
-    /* Memory allocation */
     new = (LinkedList *)malloc(sizeof(LinkedList));
-
-    /* Check memory allocation errors */
     if (new == NULL)
         return NULL;
 
-    /* Initialize new node */
+    /* IInicialização do novo nó */
     new->vertice = vertice;
     new->next = next;
 
@@ -201,58 +198,51 @@ LinkedList *insertUnsortedLinkedList(LinkedList *next, int vertice)
 }
 
 /*
- *  Function:
+ *  Função:
  *    insertSortedLinkedList
  *
- *  Description:
- *    Inserts an item in order in a sorted linked list.
+ *  Descrição:
+ *    Insere um item por ordem na lista.
  *
- *  Arguments:
- *    Pointer to the first node of a sorted linked list:
- *        (LinkedList *) first
- *    Pointer to item to be inserted:
- *        Item item
- *    Pointer to function to compare two items:
- *        int comparisonItemFnt(void * item1, void * item2)
+ *  Argumentos:
+ *    Ponteiro para o primeiro nó da lista: (LinkedList *) first
  *
- *      This function must return a value less, equal, or greater
- *      than zero if item1 compares less, equal, or greater than
- *      item2, respectively.
+ *    Ponteiro para o item a ser inserido: Item item
  *
- *    Pointer to integer to write error return value:
- *        (int *) err
+ *    Ponteiro para afunção que faz a comparação: int comparisonItemFnt(void * item1, void * item2)
  *
- *        0 upon sucess, 1 in case the item is NULL, and 2 in
- *      case of memory allocation failure.
+ *    Ponteiro para um inteiro para escrever valores de retorno errados (int *) err
+ *     0 para o caso de sucesso, 1 quando o item é NULL e 2 se alocar mal a memória
  *
- *  Return value:
- *    Returns the pointer to the first node of the sorted linked list.
+ *  Retorna:
+ *    Retorna o ponteiro para o primeiro nó da lista.
  */
-LinkedList *insertSortedLinkedList(LinkedList *first, int verticenovo, Item custo)
+LinkedList *insertSortedLinkedList(LinkedList *first, int verticenovo, int custo, int linha, int coluna)
 {
     LinkedList *new, *aux;
 
-    /* alloc and check */
     new = (LinkedList *)malloc(sizeof(LinkedList));
     if (new == NULL)
         return NULL;
 
-    new->vertice = verticenovo; /* Initialize new node  */
+    new->vertice = verticenovo; /* inicializa o novo nó  */
     new->custo = custo;
+    new->linhamc = linha;
+    new->colunamc = coluna;
     new->next = NULL;
 
-    if (first == NULL) /* first item in list */
+    if (first == NULL) /* primeiro item da lista */
     {
         return new;
     }
-    /* list not empty, insertion sort */
-    /* insert at head */
+    /* a lista nao está vazia, logo insere */
+    /* insere na cabeça */
     if ((compareItems(verticenovo, first->vertice) <= 0))
     {
         new->next = first;
         return new;
     }
-    /* second etc */
+    /* insere no segundo nó e continua */
     aux = first;
     while (aux != NULL)
     {
@@ -265,7 +255,7 @@ LinkedList *insertSortedLinkedList(LinkedList *first, int verticenovo, Item cust
                 return first;
             }
         }
-        else /* none left, insert in tail */
+        else /* acabam logo insere na tail */
         {
             aux->next = new;
             return first;

@@ -28,16 +28,16 @@ int main(int argc, char *argv[])
     /*Aloca espaço para o nome dos ficheiros*/
     FileIn = (char *)malloc(sizeof(char) * (strlen(argv[2]) + 1));
     if (FileIn == NULL)
-        exit(-1);
+        exit(0);
     strcpy(FileIn, argv[2]);
     FileOut = (char *)malloc(sizeof(char) * (strlen(argv[2]) + 2));
     if (FileOut == NULL)
-        exit(-1);
+        exit(0);
 
     strcpy(FileOut, FileIn);
     temp = strrchr(FileOut, '.');
     *temp = '\0';
-    strcat(FileOut, ".sol2"); /*Extensão da solução*/
+    strcat(FileOut, ".so2"); /*Extensão da solução*/
     fpIn = fopen(FileIn, "r");
 
     if (fpIn == NULL)
@@ -68,7 +68,8 @@ int main(int argc, char *argv[])
         free(FileOut);
         exit(0);
     }
-    modosDeJogo(fpIn, fpOut); /*Chama a função que inicia o tabuleiro e decide os modos de jogo*/
+    criartabuleiro(fpIn, fpOut); /*Chama a função que inicia o tabuleiro e decide os modos de jogo*/
+    fclose(fpIn);
     fclose(fpOut);
     free(FileIn);
     free(FileOut);

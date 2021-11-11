@@ -4,7 +4,7 @@
  *   tabuleiro.c
  *
  * DESCRIPTION
- *  Lê o que está no ficheiro e consoante o que é lido escolhe os modos de jogo
+ *
  *
  * COMMENTS
  *
@@ -18,45 +18,69 @@
 #include "LinkedList.h"
 #include "defs.h"
 
+/*
+ *  Tipo de dados: grafo
+ *
+ *  Descrição: Estrutura com:
+ *      1) Vértices: Números de salas
+ *      2) Arestas
+ *      3) Matriz de adjacências
+ *
+ */
+
 struct grafo
 {
     int Vertices;
     int arestas;
     LinkedList **adj;
 };
+
+/*
+ *  Tipo de dados: LinkedListStruct
+ *
+ *  Descrição: Estrutura com:
+ *      1) Vértices: Números de salas
+ *      2) Pointer para o próximo nó
+ *      3) Custo
+ *      4) Linha com o menor custo
+ *      5) Coluna com o menor custo
+ *
+ */
+
 struct LinkedListStruct
 {
     int vertice;
     LinkedList *next;
     int custo;
+    int linhamc;
+    int colunamc;
 };
 
-/******************************************************************************
- * modosDeJogo ()
+/*
+ *  Função:
+ *    criartabuleiro
  *
- * Arguments: Ficheiro de entrada e de saida
- * Returns: ---
- * Side-Effects: none
+ *  Descrição:
  *
- * Description: Realiza a leitura do ficheiro de entrada, consoante o que é lido
- *****************************************************************************/
+ *
+ *  Argumentos:
+ *    Ponteiros com o ficheiro de entrada e de saida
+ *
+ *  Retorna:
+ *      void
+ */
 
-void modosDeJogo(FILE *fpIn, FILE *fpOut)
+void criartabuleiro(FILE *fpIn, FILE *fpOut)
 {
-    int solu, aux, aux1, aux3, i, **tabuleiro, li, ci, l1i = 0, c1i = 0, tja, l2i, c2i, npi, tpi, *id, salas, *verticecounter, **matrizadj, salascounter = -1, auxaux = 0;
-    char tj[3] = {};
-    Grafo *estr;
-    LinkedList *aux2;
+    int solu, aux1, i, **tabuleiro, li, ci, tja, l2i, c2i, npi, tpi, *id, salas, salascounter = -1, salachegada;
     while ((fscanf(fpIn, "%d %d ", &li, &ci) == 2)) /*Verifica se existe mais algum tabuleiro*/
     {
-
-        tja = tj[1] - 48; /*Escolhe o modo*/
 
         tja = li;
         aux1 = ci;
         if ((fscanf(fpIn, "%d %d %d", &l2i, &c2i, &npi) != 3)) /*Formato carateristico do A6*/
             exit(0);
-        if (l2i - 1 < 0 || c2i - 1 < 0 || l2i > li || c2i > ci) /*verifica se as peças estão no tabuleiro*/
+        if (l2i - 1 < 0 || c2i - 1 < 0 || l2i > li || c2i > ci || li <= 0 || ci <= 0) /*verifica se as peças estão no tabuleiro*/
         {
             solu = -2;
             fprintf(fpOut, "%d\n\n", solu);
@@ -71,10 +95,12 @@ void modosDeJogo(FILE *fpIn, FILE *fpOut)
 
             tabuleiro = (int **)calloc(li, sizeof(int *));
             if (tabuleiro == NULL)
-                exit(-1);
+                exit(0);
             for (i = 0; i < li; ++i)
             {
                 tabuleiro[i] = (int *)calloc(ci, sizeof(int));
+                if (tabuleiro[i] == NULL)
+                    exit(0);
             }
 
             for (i = 0; i < npi; i++)
@@ -85,238 +111,71 @@ void modosDeJogo(FILE *fpIn, FILE *fpOut)
             }
             li = tja;
             ci = aux1;
-            id = (int *)malloc(li * ci * sizeof(int) + 1);
+            id = (int *)malloc(li * ci * sizeof(int));
             if (id == NULL)
-                exit(-1);
+                exit(0);
             id = soupintor(tabuleiro, li, ci, id); /*Chama a função que retorna a solução do A6*/
-            /*for (i = 0; i < li; i++)
-            {
-                for (aux = 0; aux < ci; aux++)
-                {
-                    printf(" %2d ", id[i * ci + aux]);
-                }
-                printf("\n");
-            }*/
 
-            for (i = 0, aux1 = -2; i < li; i++)
-            {
-                for (aux = 0; aux < ci; aux++)
-                {
-                    if (tabuleiro[i][aux] == 0)
-                    {
-                        if (id[i * ci + aux] == i * ci + aux)
-                        {
-                            salascounter--;
-                            id[i * ci + aux] = salascounter;
-                        }
+            salascounter = salascounters(tabuleiro, id, li, ci);
+            for (salachegada = (l2i - 1) * ci + c2i - 1; salachegada >= 0; salachegada = id[salachegada])
+                ;
 
-                        for (aux1 = i * ci + aux; aux1 >= 0; aux1 = id[aux1])
-                            ;
-                        tabuleiro[i][aux] = aux1;
-                    }
-                }
-            }
-            salas = -salascounter - 1;
-            for (i = 0; i < li; i++)
-            {
-                for (aux = 0; aux < ci; aux++)
-                {
-                    printf(" %2d", tabuleiro[i][aux]);
-                }
-                printf("\n");
-            }
-            printf("\n\n%d\n\n", salas);
             free(id);
-            estr = (Grafo *)calloc(1, sizeof(Grafo));
-            estr = criargarph(salas, estr);
-            grafonightmare(estr, salas, tabuleiro, li, ci);
-            for (i = 0; i < li; i++)
+            if (salachegada == -2)
             {
-                free(tabuleiro[i]);
-            }
-
-            free(tabuleiro);
-
-            // montargraph(estr, matrizadj, salas);
-            i = 0;
-            while (i < estr->Vertices)
-            {
-                aux2 = estr->adj[i];
-                while (aux2 != NULL)
+                fprintf(fpOut, "%d", 0);
+                for (i = 0; i < li; i++)
                 {
-                    aux1 = getItemLinkedList(aux2);
-                    aux = *((int *)getcustoLinkedList(aux2));
-                    printf("%d:%d ", aux1, aux);
-                    aux2 = getNextNodeLinkedList(aux2);
+                    free(tabuleiro[i]);
                 }
-                printf("-1\n");
-                i++;
+                free(tabuleiro);
             }
-
-            exit(0);
-            for (i = 0; i < li; i++)
+            else
             {
-                free(matrizadj[i]);
+
+                salachegada = -salachegada - 2;
+                salas = -salascounter - 1;
+                grafotime(salas, tabuleiro, li, ci, salachegada, fpOut);
             }
-
-            free(matrizadj);
-
-            // só temos o graph
         }
+        fprintf(fpOut, "\n");
     }
 }
 
-void grafonightmare(Grafo *estr, int salas, int **tabuleiro, int li, int ci)
+/*
+ *  Função:
+ *    salascounters
+ *
+ *  Descrição:
+ *
+ *
+ *  Argumentos:
+ *
+ *
+ *  Retorna:
+ *
+ */
+
+int salascounters(int **tabuleiro, int *id, int li, int ci)
 {
-    int i, aux, aux1;
-    for (i = 0; i < li; i++)
+    int salascounter = -1, i, aux, aux1;
+    for (i = 0, aux1 = -2; i < li; i++)
     {
         for (aux = 0; aux < ci; aux++)
         {
-            if (quebravel(tabuleiro, i, aux, li, ci) == 1)
+            if (tabuleiro[i][aux] == 0)
             {
-                criarligacao(estr, tabuleiro[i - 1][aux] + salas + 1, tabuleiro[i + 1][aux] + salas + 1, (Item)&tabuleiro[i][aux]);
-            }
-            else if (quebravel(tabuleiro, i, aux, li, ci) == 2)
-            {
+                if (id[i * ci + aux] == i * ci + aux)
+                {
+                    salascounter--;
+                    id[i * ci + aux] = salascounter;
+                }
 
-                criarligacao(estr, tabuleiro[i][aux + 1] + salas + 1, tabuleiro[i][aux + 1] + salas + 1, (Item)&tabuleiro[i][aux]);
-            }
-            else if (quebravel(tabuleiro, i, aux, li, ci) == 3)
-            {
-                criarligacao(estr, tabuleiro[i - 1][aux] + salas + 1, tabuleiro[i + 1][aux] + salas + 1, (Item)&tabuleiro[i][aux]);
-                criarligacao(estr, tabuleiro[i][aux - 1] + salas + 1, tabuleiro[i][aux + 1] + salas + 1, (Item)&tabuleiro[i][aux]);
+                for (aux1 = i * ci + aux; aux1 >= 0; aux1 = id[aux1])
+                    ;
+                tabuleiro[i][aux] = aux1;
             }
         }
     }
+    return salascounter;
 }
-
-int **criarmatriz(int **tabuleiro, int li, int ci, int *verticecounter, int **matrizadj, int salas, int l1i, int c1i)
-{
-    int aux, aux1, i, aux2;
-    for (i = 0, aux1 = 0, aux2 = 0; i < li; i++)
-    {
-        for (aux = 0; aux < ci; aux++)
-        {
-            if (quebravel(tabuleiro, i, aux, li, ci) == 1)
-            {
-
-                for (aux1 = 0; aux1 < salas; aux1++)
-                {
-                    if (verticecounter[aux1] == tabuleiro[i + 1][aux])
-                    {
-                        break;
-                    }
-                }
-                for (aux2 = 0; aux2 < salas; aux2++)
-                {
-                    if (verticecounter[aux2] == tabuleiro[i - 1][aux])
-                    {
-                        break;
-                    }
-                }
-                if (matrizadj[aux1][aux2] == 0)
-                {
-                    matrizadj[aux1][aux2] = tabuleiro[i][aux];
-                    matrizadj[aux2][aux1] = tabuleiro[i][aux];
-                }
-                else if (matrizadj[aux1][aux2] > tabuleiro[i][aux])
-                {
-                    matrizadj[aux1][aux2] = tabuleiro[i][aux];
-                    matrizadj[aux2][aux1] = tabuleiro[i][aux];
-                }
-            }
-            else if (quebravel(tabuleiro, i, aux, li, ci) == 2)
-            {
-                for (aux1 = 0; aux1 < salas; aux1++)
-                {
-                    if (verticecounter[aux1] == tabuleiro[i][aux + 1])
-                    {
-                        break;
-                    }
-                }
-                for (aux2 = 0; aux2 < salas; aux2++)
-                {
-                    if (verticecounter[aux2] == tabuleiro[i][aux - 1])
-                    {
-                        break;
-                    }
-                }
-                if (matrizadj[aux1][aux2] == 0)
-                {
-                    matrizadj[aux1][aux2] = tabuleiro[i][aux];
-                    matrizadj[aux2][aux1] = tabuleiro[i][aux];
-                }
-                else if (matrizadj[aux1][aux2] > tabuleiro[i][aux])
-                {
-                    matrizadj[aux1][aux2] = tabuleiro[i][aux];
-                    matrizadj[aux2][aux1] = tabuleiro[i][aux];
-                }
-            }
-            else if (quebravel(tabuleiro, i, aux, li, ci) == 3)
-            {
-
-                for (aux1 = 0; aux1 < salas; aux1++)
-                {
-                    if (verticecounter[aux1] == tabuleiro[i + 1][aux])
-                    {
-                        break;
-                    }
-                }
-                for (aux2 = 0; aux2 < salas; aux2++)
-                {
-                    if (verticecounter[aux2] == tabuleiro[i - 1][aux])
-                    {
-                        break;
-                    }
-                }
-                if (matrizadj[aux1][aux2] == 0)
-                {
-                    matrizadj[aux1][aux2] = tabuleiro[i][aux];
-                    matrizadj[aux2][aux1] = tabuleiro[i][aux];
-                }
-                else if (matrizadj[aux1][aux2] > tabuleiro[i][aux])
-                {
-                    matrizadj[aux1][aux2] = tabuleiro[i][aux];
-                    matrizadj[aux2][aux1] = tabuleiro[i][aux];
-                }
-                for (aux1 = 0; aux1 < salas; aux1++)
-                {
-                    if (verticecounter[aux1] == tabuleiro[i][aux + 1])
-                    {
-                        break;
-                    }
-                }
-                for (aux2 = 0; aux2 < salas; aux2++)
-                {
-                    if (verticecounter[aux2] == tabuleiro[i][aux - 1])
-                    {
-                        break;
-                    }
-                }
-                if (matrizadj[aux1][aux2] == 0)
-                {
-                    matrizadj[aux1][aux2] = tabuleiro[i][aux];
-                    matrizadj[aux2][aux1] = tabuleiro[i][aux];
-                }
-                else if (matrizadj[aux1][aux2] > tabuleiro[i][aux])
-                {
-                    matrizadj[aux1][aux2] = tabuleiro[i][aux];
-                    matrizadj[aux2][aux1] = tabuleiro[i][aux];
-                }
-            }
-        }
-    }
-    return matrizadj;
-}
-
-/*int numligacoes(int *tabuleiro, int li, int ci)
-{
-    int i, j;
-    for (i = 0; i < ci; i++)
-    {
-        for (j = 0; i < li; j++)
-        {
-                }
-    }
-}*/

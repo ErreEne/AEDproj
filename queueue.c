@@ -4,37 +4,72 @@
 #include <strings.h>
 
 #include "defs.h"
-
-static int *queuevertice;
-static int espaco; /* primeira posição livre */
-static int qsize;
-static int *queuecusto;
+#include "header.h"
 
 /* tamanho da tabela */
+static int espaco;
 
-void PQinit(int sala, int *queuevertice, int *queuecusto, int qsize, int espaco)
+/*
+ *  Função:
+ *    PQinit
+ *
+ *  Descrição:
+ *      Inicializa a fila cpm prioridade
+ *
+ *  Argumentos:
+ *    Ponteiro para a fila: *queue e ponteiro auxiliar: *queueuaux
+ *    sala, qsize
+ *
+ *  Retorna:
+ *      void
+ */
+
+void PQinit(int sala, int *queue, int qsize, int *queueaux)
 {
-
-    queuevertice = (int *)calloc(sala, sizeof(int));
-    queuecusto = (int *)calloc(sala, sizeof(int));
-    if (queuevertice == NULL || queuecusto == NULL)
-        exit(-1);
-    qsize = sala;
     espaco = 0;
+    qsize = sala;
 }
 
-void PQinsert(int vertice, int *queue, int espaco, int *wt)
+/*
+ *  Função:
+ *    PQinsert
+ *
+ *  Descrição:
+ *      insere novo elemento no fim da fila e restabelece ordenação com FixUp
+ *
+ *  Argumentos:
+ *    Ponteiro para a fila: *queue e ponteiro auxiliar: *queueuaux
+ *    vertice, qsize, w
+ *
+ *  Retorna:
+ *      void
+ */
+
+void PQinsert(int vertice, int *queue, int *wt, int qsize, int *queueaux, int w)
 {
-    /* insere novo elemento no fim e restabelece ordenação com FixUp */
     if ((espaco + 1) < qsize)
     {
         queue[espaco] = vertice;
-        FixUp(queue, espaco, wt);
+        FixUp(queue, espaco, wt, queueaux, w);
         espaco++;
     }
 }
 
-int IsEmpty(int espaco)
+/*
+ *  Função:
+ *    IsEmpty
+ *
+ *  Descrição:
+ *      Faz os testes para quando a lista está vazia
+ *
+ *  Argumentos:
+ *    Nenhuns
+ *
+ *  Retorna:
+ *      void
+ */
+
+int IsEmpty()
 {
 
     if (espaco == 0)
@@ -47,62 +82,97 @@ int IsEmpty(int espaco)
     }
 }
 
-/*int PQdelmin()
-{
-    int Idx, Min, aux;
+/*
+ *  Função:
+ *    FixUp
+ *
+ *  Descrição:
+ *
+ *
+ *  Argumentos:
+ *
+ *
+ *  Retorna:
+ *      void
+ */
 
-    for (Idx = 1, Min = 0; Idx < espaco; Idx++)
-        if (queue[Min] > queue[Idx])
-            Min = Idx;
-
-    aux = queue[Min];
-    queue[Min] = queue[espaco - 1];
-    queue[espaco - 1] = aux;
-    return (queue[--espaco]);
-}
-*/
-
-void FixUp(int Heap[], int Idx, int *wt)
+void FixUp(int *Heap, int Idx, int *wt, int *queueuaux, int w)
 {
     int aux;
+
     while (Idx > 0 && wt[Heap[(Idx - 1) / 2]] > wt[Heap[Idx]])
     {
+        queueuaux[Heap[(Idx - 1) / 2]] = Idx;
+        queueuaux[Heap[Idx]] = (Idx - 1) / 2;
         aux = Heap[Idx];
         Heap[Idx] = Heap[(Idx - 1) / 2];
         Heap[(Idx - 1) / 2] = aux;
+
         Idx = (Idx - 1) / 2;
     }
 }
 
-void FixDown(int Heap[], int Idx, int N, int *wt)
+/*
+ *  Função:
+ *    FixDown
+ *
+ *  Descrição:
+ *
+ *
+ *  Argumentos:
+ *
+ *
+ *  Retorna:
+ *      void
+ */
+
+void FixDown(int Heap[], int Idx, int N, int *wt, int *queueaux)
 {
-    int Child, aux; /* índice de um nó descendente */
+    int Child, aux;
     while (2 * Idx < N - 1)
-    { /* enquanto não chegar às folhas */
+    {
         Child = 2 * Idx + 1;
-        /* Selecciona o maior descendente. */
-        /* Nota: se índice Child é N-1, então só há um descendente */
         if (Child < (N - 1) && wt[Heap[Child]] > wt[Heap[Child + 1]])
             Child++;
         if (!(wt[Heap[Idx]] > wt[Heap[Child]]))
-            break; /* condição acervo */
-        /* satisfeita */
+            break;
+
+        queueaux[Heap[Idx]] = Child;
+        queueaux[Heap[Child]] = Idx;
+
         aux = Heap[Idx];
         Heap[Idx] = Heap[Child];
         Heap[Child] = aux;
-        /* continua a descer a árvore */
         Idx = Child;
     }
 }
 
-int PQdelmin(int *queue, int espaco, int *wt)
+/*
+ *  Função:
+ *    Pqdelmin
+ *
+ *  Descrição:
+ *
+ *
+ *  Argumentos:
+ *
+ *
+ *  Retorna:
+ *
+ */
+
+int PQdelmin(int *queue, int *wt, int *queueaux)
 {
     int aux;
+
+    queueaux[queue[0]] = -1;
+    queueaux[queue[espaco - 1]] = 0;
+
     aux = queue[0];
     queue[0] = queue[espaco - 1];
     queue[espaco - 1] = aux;
 
-    FixDown(queue, 0, espaco - 1, wt);
+    FixDown(queue, 0, espaco - 1, wt, queueaux);
     /* ultimo elemento não considerado na reordenação */
     return queue[--espaco];
 }

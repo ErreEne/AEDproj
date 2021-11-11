@@ -7,7 +7,7 @@
  *  Realiza as variantes de funcionamento consoante o ficheiro de entrada.
  *
  * COMMENTS
- *  TÁ TUDO IMPECÁVEL!!!!
+ *
  ******************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -151,10 +151,10 @@ int procura(int **tabuleiro, int l1i, int c1i, int li, int ci, char tj[3])
 
 int *soupintor(int **tabela, int li, int ci, int *id)
 {
-    int aux, aux1, *sz, i, j, p, q;
-    sz = (int *)malloc(li * ci * sizeof(int) - 1);
+    int aux, aux1, *sz, i, j, p, q, x, t, ij, ji;
+    sz = (int *)malloc(li * ci * sizeof(int));
     if (sz == NULL)
-        exit(-1);
+        exit(0);
 
     for (aux = 0; aux < li * ci; aux++)
     {
@@ -189,11 +189,24 @@ int *soupintor(int **tabela, int li, int ci, int *id)
                         {
                             id[aux] = aux1;
                             sz[aux1] += sz[aux];
+                            t = aux1;
                         }
                         else
                         {
                             id[aux1] = aux;
                             sz[aux] += sz[aux1];
+                            t = aux;
+                        }
+                        for (ij = p; ij != id[ij]; ij = x)
+                        {
+                            x = id[ij];
+                            id[ij] = t;
+                        }
+
+                        for (ji = q; ji != id[ji]; ji = x)
+                        {
+                            x = id[ji];
+                            id[ji] = t;
                         }
                     }
                 }
@@ -219,12 +232,25 @@ int *soupintor(int **tabela, int li, int ci, int *id)
                         {
                             id[aux] = aux1;
                             sz[aux1] += sz[aux];
+                            t = aux1;
                         }
                         else
                         {
                             // id[aux1] = id[aux1 - ci];
                             id[aux1] = aux;
                             sz[aux] += sz[aux1];
+                            t = aux;
+                        }
+                        for (ij = p; ij != id[ij]; ij = x)
+                        {
+                            x = id[ij];
+                            id[ij] = t;
+                        }
+
+                        for (ji = q; ji != id[ji]; ji = x)
+                        {
+                            x = id[ji];
+                            id[ji] = t;
                         }
                     }
                 }
@@ -232,44 +258,85 @@ int *soupintor(int **tabela, int li, int ci, int *id)
         }
     }
 
-    id[li * ci] = contarsalas(id, li, ci, tabela);
     free(sz);
     return id;
 }
+
+/*
+ *  Função:
+ *    quebravel
+ *
+ *  Descrição:
+ *
+ *
+ *  Argumentos:
+ *
+ *
+ *  Retorna:
+ *      0:
+ *      1:
+ *      2:
+ *      3:
+ */
 
 int quebravel(int **tabuleiro, int l1i, int c1i, int li, int ci)
 {
     // por ifs para verificar que está fora do tabuleiro
 
-    if (c1i == 0 || c1i == ci - 1 || l1i == 0 || l1i == li - 1 || tabuleiro[l1i][c1i] <= -2)
+    if (c1i == 0 || c1i == ci - 1 || l1i == 0 || l1i == li - 1 || tabuleiro[l1i][c1i] <= -1)
     {
         /* code */
     }
     else if (tabuleiro[l1i + 1][c1i] <= -2 && tabuleiro[l1i - 1][c1i] <= -2 && tabuleiro[l1i][c1i + 1] <= -2 && tabuleiro[l1i][c1i - 1] <= -2)
     {
+        if (tabuleiro[l1i + 1][c1i] == tabuleiro[l1i - 1][c1i] || tabuleiro[l1i][c1i + 1] == tabuleiro[l1i][c1i - 1])
+        {
+            return 0;
+        }
         return 3;
     }
 
-    if (l1i == 0 || l1i == li - 1 || tabuleiro[l1i][c1i] <= -2)
+    if (l1i == 0 || l1i == li - 1 || tabuleiro[l1i][c1i] <= -1)
     {
     }
     else if (tabuleiro[l1i + 1][c1i] <= -2 && tabuleiro[l1i - 1][c1i] <= -2)
     {
+        if (tabuleiro[l1i + 1][c1i] == tabuleiro[l1i - 1][c1i])
+        {
+            return 0;
+        }
         return 1;
     }
 
-    if (c1i == 0 || c1i == ci - 1 || tabuleiro[l1i][c1i] <= -2)
+    if (c1i == 0 || c1i == ci - 1 || tabuleiro[l1i][c1i] <= -1)
     {
         /* code */
     }
     else if (tabuleiro[l1i][c1i + 1] <= -2 && tabuleiro[l1i][c1i - 1] <= -2)
     {
-
+        if (tabuleiro[l1i][c1i + 1] == tabuleiro[l1i][c1i - 1])
+        {
+            return 0;
+        }
         return 2;
     }
 
     return 0;
 }
+
+/*
+ *  Função:
+ *    contarsalas
+ *
+ *  Descrição:
+ *
+ *
+ *  Argumentos:
+ *
+ *
+ *  Retorna:
+ *      o número de salas
+ */
 
 int contarsalas(int *id, int li, int ci, int **tabela)
 {
