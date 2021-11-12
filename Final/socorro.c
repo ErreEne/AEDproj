@@ -90,7 +90,7 @@ void criarligacao(Grafo *estr, int vertice1, int vertice2, int custo, int linha,
 
     for (aux = estr->adj[vertice1]; aux != NULL; aux = aux->next)
     {
-        if (aux->vertice == vertice2)
+        if (aux->vertice == vertice2) /*se a ligação já existem, substituir o custo*/
         {
             if (custo >= aux->custo)
             {
@@ -167,23 +167,23 @@ void grafonightmare(Grafo *estr, int salas, int **tabuleiro, int li, int ci)
     {
         for (aux = 0; aux < ci; aux++)
         {
-            if (quebravel(tabuleiro, i, aux, li, ci) == 1 && tabuleiro[i][aux] > 0)
+            if (quebravel(tabuleiro, i, aux, li, ci) == 1 && tabuleiro[i][aux] > 0) /*quebravel na vertical*/
             {
-                if (-tabuleiro[i - 1][aux] - 2 != -tabuleiro[i + 1][aux] - 2)
+                if (-tabuleiro[i - 1][aux] - 2 != -tabuleiro[i + 1][aux] - 2) /*não é a mesma sala*/
                 {
                     criarligacao(estr, -tabuleiro[i - 1][aux] - 2, -tabuleiro[i + 1][aux] - 2, tabuleiro[i][aux], i, aux);
                 }
             }
-            else if (quebravel(tabuleiro, i, aux, li, ci) == 2 && tabuleiro[i][aux] > 0)
+            else if (quebravel(tabuleiro, i, aux, li, ci) == 2 && tabuleiro[i][aux] > 0) /*quebravel na horizontal*/
             {
-                if (-tabuleiro[i][aux + 1] - 2 != -tabuleiro[i][aux - 1] - 2)
+                if (-tabuleiro[i][aux + 1] - 2 != -tabuleiro[i][aux - 1] - 2) /*não é a mesma sala*/
                 {
                     criarligacao(estr, -tabuleiro[i][aux - 1] - 2, -tabuleiro[i][aux + 1] - 2, tabuleiro[i][aux], i, aux);
                 }
             }
-            else if (quebravel(tabuleiro, i, aux, li, ci) == 3 && tabuleiro[i][aux] > 0)
+            else if (quebravel(tabuleiro, i, aux, li, ci) == 3 && tabuleiro[i][aux] > 0) /*quebravel na vertical e na horizontal*/
             {
-                if (-tabuleiro[i - 1][aux] - 2 != -tabuleiro[i + 1][aux] - 2)
+                if (-tabuleiro[i - 1][aux] - 2 != -tabuleiro[i + 1][aux] - 2) /*não é a mesma sala*/
                 {
                     criarligacao(estr, -tabuleiro[i - 1][aux] - 2, -tabuleiro[i + 1][aux] - 2, tabuleiro[i][aux], i, aux);
                 }

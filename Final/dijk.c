@@ -99,6 +99,7 @@ void Dijkstra(Grafo *G, int salachegada, FILE *fpOut)
                 melhorsala[w] = v;
             }
     }
+
     free(queue);
     free(queueaux);
     if (melhorsala[0] == -1)
@@ -147,7 +148,7 @@ void caminho(Grafo *G, int salachegada, int *wt, int *st, FILE *fpOut)
     int aux = 0, numpartida = 0;
     LinkedList *lista;
 
-    while (st[aux] != -1)
+    while (st[aux] != -1) /*contar o numero de salas partidas*/
     {
         aux = st[aux];
         numpartida++;
@@ -161,7 +162,7 @@ void caminho(Grafo *G, int salachegada, int *wt, int *st, FILE *fpOut)
         {
             for (lista = G->adj[aux]; lista != NULL; lista = lista->next)
             {
-                if (lista->vertice == st[aux])
+                if (lista->vertice == st[aux]) /*percorre a lista até encontrar o vertice seguinte*/
                 {
                     break;
                 }

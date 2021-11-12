@@ -328,10 +328,10 @@ int salascounters(int **tabuleiro, int *id, int li, int ci)
                 if (id[i * ci + aux] == i * ci + aux)
                 {
                     salascounter--;
-                    id[i * ci + aux] = salascounter;
+                    id[i * ci + aux] = salascounter; /*substituir a raiz por um valor negativo inferior a -1*/
                 }
 
-                for (aux1 = i * ci + aux; aux1 >= 0; aux1 = id[aux1])
+                for (aux1 = i * ci + aux; aux1 >= 0; aux1 = id[aux1]) /*pintar o tabuleiro*/
                     ;
                 tabuleiro[i][aux] = aux1;
             }
