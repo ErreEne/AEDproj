@@ -5,7 +5,6 @@
 
 #include "socorro.h"
 #include "modos.h"
-#include "queueue.h"
 #include "tabuleiro.h"
 #include "dijk.h"
 #include "LinkedList.h"
@@ -49,20 +48,15 @@ struct LinkedListStruct
     int colunamc;
 };
 
-/*
- *  Função:
- *    criargarph
+/******************************************************************************
+ * criargraph()
  *
- *  Descrição:
+ * Arguments: salas, pointer para o Grafo
+ * Returns: Grafo
+ * Side-Effects: none
  *
- *
- *  Argumentos:
- *    Salas
- *
- *    Ponteiro
- *  Retorna:
- *
- */
+ * Description: aloca o espaço necessário para toda a estrutura do Grafo
+ *****************************************************************************/
 
 Grafo *criargarph(int salas, Grafo *estr)
 {
@@ -80,20 +74,15 @@ Grafo *criargarph(int salas, Grafo *estr)
     return estr;
 }
 
-/*
- *  Função:
- *    criarligacao
+/******************************************************************************
+ * criarligacao()
  *
- *  Descrição:
+ * Arguments: pointer para o Grafo, vertice1, vertice2, custo, linha, coluna
+ * Returns: 0
+ * Side-Effects: none
  *
- *
- *  Argumentos:
- *    Ponteiro para
- *    vertice1, vertice2, custo, linha, coluna
- *
- *  Retorna:
- *      void
- */
+ * Description: Estabelece a ligação entre vertices
+ *****************************************************************************/
 
 void criarligacao(Grafo *estr, int vertice1, int vertice2, int custo, int linha, int coluna)
 {
@@ -131,19 +120,15 @@ void criarligacao(Grafo *estr, int vertice1, int vertice2, int custo, int linha,
     estr->adj[vertice2] = insertSortedLinkedList(estr->adj[vertice2], vertice1, custo, linha, coluna);
 }
 
-/*
- *  Função:
- *    compareItems
+/******************************************************************************
+ * compareItems()
  *
- *  Descrição:
+ * Arguments: it1,it2
+ * Returns:
+ * Side-Effects: none
  *
- *
- *  Argumentos:
- *      item1 e item2
- *
- *  Retorna: Esta função retorna um valor inferior, igual ou superior a zero se o item1 for inferior, igual ou superior ao iem2
- *
- */
+ * Description: Compara dois inteiros
+ *****************************************************************************/
 
 int compareItems(int it1, int it2)
 {
@@ -165,20 +150,15 @@ int compareItems(int it1, int it2)
     }
 }
 
-/*
- *  Função:
+/******************************************************************************
+ * grafonightmare()
  *
+ * Arguments: pointer para o Grafo, salas, tabuleiro, li, ci
+ * Returns:
+ * Side-Effects: Free do tabuleiro
  *
- *  Descrição:
- *
- *
- *  Argumentos:
- *    Ponteiro para
- *    salas, li, ci
- *
- *  Retorna:
- *      void
- */
+ * Description: Vê quando é possível criar uma ligação entre vertices do grafo
+ *****************************************************************************/
 
 void grafonightmare(Grafo *estr, int salas, int **tabuleiro, int li, int ci)
 {
@@ -226,20 +206,15 @@ void grafonightmare(Grafo *estr, int salas, int **tabuleiro, int li, int ci)
     free(tabuleiro[i - 1]);
 }
 
-/*
- *  Função:
+/******************************************************************************
+ * grafotime()
  *
+ * Arguments: salas, tabuleiro, li, ci, pointer para o Output
+ * Returns:
+ * Side-Effects:
  *
- *  Descrição:
- *
- *
- *  Argumentos:
- *    Ponteiro para
- *    salachegada, li, ci
- *
- *  Retorna:
- *      void
- */
+ * Description: Realiza todas as operações do Grafo e da procura
+ *****************************************************************************/
 
 void grafotime(int salas, int **tabuleiro, int li, int ci, int salachegada, FILE *fpOut)
 {
@@ -250,23 +225,19 @@ void grafotime(int salas, int **tabuleiro, int li, int ci, int salachegada, FILE
     estr = criargarph(salas, estr);
     grafonightmare(estr, salas, tabuleiro, li, ci);
     free(tabuleiro);
-    GRAPHpfs(estr, salachegada, fpOut);
+    Dijkstra(estr, salachegada, fpOut);
     freeGraph(estr);
 }
 
-/*
- *  Função:
+/******************************************************************************
+ * freeGrapf()
  *
+ * Arguments: pointer para o Grafo
+ * Returns:
+ * Side-Effects:
  *
- *  Descrição:
- *      Liberta a memória alocada na criação do grafo
- *
- *  Argumentos:
- *
- *
- *  Retorna:
- *      void
- */
+ * Description: Liberta o espaço ocupado pelo Grafo
+ *****************************************************************************/
 
 void freeGraph(Grafo *G)
 {

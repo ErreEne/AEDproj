@@ -1,5 +1,5 @@
-#ifndef HEADER_H_INCLUDED
-#define HEADER_H_INCLUDED
+#ifndef GRAPHFUNC
+#define GRAPHFUNC
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,5 +14,5 @@ void criarligacao(Grafo *estr, int vertice1, int vertice2, int custo, int linha,
 int compareItems(int it1, int it2);
 void GRAPHpfs(Grafo *G, int salachegada, FILE *fpOut);
 void grafotime(int salas, int **tabuleiro, int li, int ci, int salachegada, FILE *fpOut);
-
+void freeGraph(Grafo *G);
 #endif /* HEADER_H_INCLUDED */

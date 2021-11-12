@@ -14,19 +14,16 @@
 #include <string.h>
 #include <strings.h>
 
-#include "socorro.h"
 #include "modos.h"
-#include "queueue.h"
 #include "tabuleiro.h"
-#include "dijk.h"
 
 /******************************************************************************
  * vertipo ()
  *
- * Arguments: 
- * Returns: 
+ * Arguments:
+ * Returns:
  *
- * Description: Identifica o tipo de célula, modo A1
+ * Description: Identifica o tipo de célula
  *****************************************************************************/
 
 int vertipo(int **tabuleiro, int l1i, int c1i, int li, int ci)
@@ -145,11 +142,11 @@ int procura(int **tabuleiro, int l1i, int c1i, int li, int ci, char tj[3])
 /******************************************************************************
  * soupintor()
  *
- * Arguments: tabela, li, ci, l1i, c1i, l2i, c2i
- * Returns: 0
+ * Arguments: tabela, li, ci, id
+ * Returns: id
  * Side-Effects: none
  *
- * Description: Modo A6, pintura das salas através da conectividade
+ * Description: Pinura das salas através da conectividade (CWQU)
  *****************************************************************************/
 
 int *soupintor(int **tabela, int li, int ci, int *id)
@@ -254,22 +251,15 @@ int *soupintor(int **tabela, int li, int ci, int *id)
     return id;
 }
 
-/*
- *  Função:
- *    quebravel
+/******************************************************************************
+ * quebravel()
  *
- *  Descrição:
+ * Arguments: tabela, l1i, c1i, li, ci
+ * Returns: 0 se não for quebravel, 1 se for quebravel somente no eixo dos y, 2 se for quebravel somento no eixo dos x e 3 se for em ambos os sentidos
+ * Side-Effects: none
  *
- *
- *  Argumentos:
- *
- *
- *  Retorna:
- *      0:
- *      1:
- *      2:
- *      3:
- */
+ * Description: Returna um valor dependendo se a celula analisada é não quebravel
+ *****************************************************************************/
 
 int quebravel(int **tabuleiro, int l1i, int c1i, int li, int ci)
 {
@@ -316,35 +306,36 @@ int quebravel(int **tabuleiro, int l1i, int c1i, int li, int ci)
     return 0;
 }
 
-/*
- *  Função:
- *    contarsalas
+/******************************************************************************
+ * salascounter()
  *
- *  Descrição:
+ * Arguments: tabuleiro, id, li, ci
+ * Returns: numero de salas
+ * Side-Effects:pintar o tabuleiro
  *
- *
- *  Argumentos:
- *      Pointer para o id, li, ci, tabela
- *
- *  Retorna:
- *      
- */
+ * Description: conta o numero de salas e "pinta" o tabuleiro
+ *****************************************************************************/
 
-int contarsalas(int *id, int li, int ci, int **tabela)
+int salascounters(int **tabuleiro, int *id, int li, int ci)
 {
-    int i, aux, sala = 0;
-
-    for (i = 0; i < li; i++)
+    int salascounter = -1, i, aux, aux1;
+    for (i = 0, aux1 = -2; i < li; i++)
     {
         for (aux = 0; aux < ci; aux++)
         {
-            /* code */
-
-            if (id[i * ci + aux] == i * ci + aux + 2 && tabela[i][aux] == 0)
+            if (tabuleiro[i][aux] == 0)
             {
-                sala++;
+                if (id[i * ci + aux] == i * ci + aux)
+                {
+                    salascounter--;
+                    id[i * ci + aux] = salascounter;
+                }
+
+                for (aux1 = i * ci + aux; aux1 >= 0; aux1 = id[aux1])
+                    ;
+                tabuleiro[i][aux] = aux1;
             }
         }
     }
-    return sala;
+    return salascounter;
 }

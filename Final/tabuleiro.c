@@ -16,11 +16,8 @@
 
 #include "socorro.h"
 #include "modos.h"
-#include "queueue.h"
 #include "tabuleiro.h"
-#include "dijk.h"
 #include "LinkedList.h"
-#include "defs.h"
 
 /*
  *  Tipo de dados: grafo
@@ -39,40 +36,16 @@ struct grafo
     LinkedList **adj;
 };
 
-/*
- *  Tipo de dados: LinkedListStruct
+/******************************************************************************
+ * criartabuleiro ()
  *
- *  Descrição: Estrutura com:
- *      1) Vértices: Números de salas
- *      2) Pointer para o próximo nó
- *      3) Custo
- *      4) Linha com o menor custo
- *      5) Coluna com o menor custo
+ * Arguments: pointers para o input e output
+ * Returns:
+ * Side-Effects: none
  *
- */
-
-struct LinkedListStruct
-{
-    int vertice;
-    LinkedList *next;
-    int custo;
-    int linhamc;
-    int colunamc;
-};
-
-/*
- *  Função:
- *    criartabuleiro
- *
- *  Descrição:
- *
- *
- *  Argumentos:
- *    Ponteiros com o ficheiro de entrada e de saida
- *
- *  Retorna:
- *      void
- */
+ * Description: Cria o tabuleiro e consequentemente mantém todo o algoritmo de
+ *              procura num loop para o caso de existir um outro tabuleiro em sequência
+ *****************************************************************************/
 
 void criartabuleiro(FILE *fpIn, FILE *fpOut)
 {
@@ -129,9 +102,9 @@ void criartabuleiro(FILE *fpIn, FILE *fpOut)
                 id = (int *)malloc(li * ci * sizeof(int));
                 if (id == NULL)
                     exit(0);
-                id = soupintor(tabuleiro, li, ci, id); /*Chama a função que retorna a solução do A6*/
+                id = soupintor(tabuleiro, li, ci, id); /*Chama a função que retorna o id conectado*/
 
-                salascounter = salascounters(tabuleiro, id, li, ci);
+                salascounter = salascounters(tabuleiro, id, li, ci); /*irá contar o número de salas e introduzir na raiz de cada id com um valor carateristico por sala*/
                 for (salachegada = (l2i - 1) * ci + c2i - 1; salachegada >= 0; salachegada = id[salachegada])
                     ;
 
@@ -156,42 +129,4 @@ void criartabuleiro(FILE *fpIn, FILE *fpOut)
         }
         fprintf(fpOut, "\n");
     }
-}
-
-/*
- *  Função:
- *    salascounters
- *
- *  Descrição:
- *
- *
- *  Argumentos:
- *
- *
- *  Retorna:
- *
- */
-
-int salascounters(int **tabuleiro, int *id, int li, int ci)
-{
-    int salascounter = -1, i, aux, aux1;
-    for (i = 0, aux1 = -2; i < li; i++)
-    {
-        for (aux = 0; aux < ci; aux++)
-        {
-            if (tabuleiro[i][aux] == 0)
-            {
-                if (id[i * ci + aux] == i * ci + aux)
-                {
-                    salascounter--;
-                    id[i * ci + aux] = salascounter;
-                }
-
-                for (aux1 = i * ci + aux; aux1 >= 0; aux1 = id[aux1])
-                    ;
-                tabuleiro[i][aux] = aux1;
-            }
-        }
-    }
-    return salascounter;
 }

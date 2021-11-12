@@ -10,70 +10,36 @@
 #include "tabuleiro.h"
 #include "dijk.h"
 
-/* tamanho da tabela */
-static int espaco;
+/******************************************************************************
+ * PQinsert()
+ *
+ * Arguments:vertice, queue, wt, qsize, queueaux, w
+ * Returns:
+ * Side-Effects:
+ *
+ * Description:
+ *****************************************************************************/
 
-/*
- *  Função:
- *    PQinit
- *
- *  Descrição:
- *      Inicializa a fila cpm prioridade
- *
- *  Argumentos:
- *    Ponteiro para a fila: *queue e ponteiro auxiliar: *queueuaux
- *    sala, qsize
- *
- *  Retorna:
- *      void
- */
-
-void PQinit(int sala, int *queue, int qsize, int *queueaux)
-{
-    espaco = 0;
-    qsize = sala;
-}
-
-/*
- *  Função:
- *    PQinsert
- *
- *  Descrição:
- *      insere novo elemento no fim da fila e restabelece ordenação com FixUp
- *
- *  Argumentos:
- *    Ponteiro para a fila: *queue e ponteiro auxiliar: *queueuaux
- *    vertice, qsize, w
- *
- *  Retorna:
- *      void
- */
-
-void PQinsert(int vertice, int *queue, int *wt, int qsize, int *queueaux, int w)
+void PQinsert(int vertice, int *queue, int *wt, int qsize, int *queueaux, int w, int espaco)
 {
     if ((espaco + 1) < qsize)
     {
         queue[espaco] = vertice;
         FixUp(queue, espaco, wt, queueaux, w);
-        espaco++;
     }
 }
 
-/*
- *  Função:
- *    IsEmpty
+/******************************************************************************
+ * IsEmpty()
  *
- *  Descrição:
- *      Faz os testes para quando a lista está vazia
+ * Arguments:espaco
+ * Returns:
+ * Side-Effects:
  *
- *  Argumentos:
- *    Nenhuns
- *
- *  Retorna:
- *      void
- */
+ * Description:Ver o estado da queue, ou seja, se está vazia
+ *****************************************************************************/
 
-int IsEmpty()
+int IsEmpty(int espaco)
 {
 
     if (espaco == 0)
@@ -86,19 +52,15 @@ int IsEmpty()
     }
 }
 
-/*
- *  Função:
- *    FixUp
+/******************************************************************************
+ * FixUp()
  *
- *  Descrição:
+ * Arguments:Heap,idx,wt,queueaux,w
+ * Returns:
+ * Side-Effects:
  *
- *
- *  Argumentos:
- *
- *
- *  Retorna:
- *      void
- */
+ * Description:Realiza o FixUp
+ *****************************************************************************/
 
 void FixUp(int *Heap, int Idx, int *wt, int *queueuaux, int w)
 {
@@ -116,21 +78,17 @@ void FixUp(int *Heap, int Idx, int *wt, int *queueuaux, int w)
     }
 }
 
-/*
- *  Função:
- *    FixDown
+/******************************************************************************
+ * FixDown()
  *
- *  Descrição:
+ * Arguments:Heap, Idx, N, wt, queueaux
+ * Returns:
+ * Side-Effects:
  *
- *
- *  Argumentos:
- *
- *
- *  Retorna:
- *      void
- */
+ * Description:Realiza o FixDown
+ *****************************************************************************/
 
-void FixDown(int Heap[], int Idx, int N, int *wt, int *queueaux)
+void FixDown(int *Heap, int Idx, int N, int *wt, int *queueaux)
 {
     int Child, aux;
     while (2 * Idx < N - 1)
@@ -151,21 +109,17 @@ void FixDown(int Heap[], int Idx, int N, int *wt, int *queueaux)
     }
 }
 
-/*
- *  Função:
- *    Pqdelmin
+/******************************************************************************
+ * PQdelmin()
  *
- *  Descrição:
+ * Arguments:queue,wt,queueaux,espaco
+ * Returns:queue[espaco-1]
+ * Side-Effects:
  *
- *
- *  Argumentos:
- *
- *
- *  Retorna:
- *
- */
+ * Description:Retira o próximo valor na Priority queue
+ *****************************************************************************/
 
-int PQdelmin(int *queue, int *wt, int *queueaux)
+int PQdelmin(int *queue, int *wt, int *queueaux, int espaco)
 {
     int aux;
 
@@ -178,5 +132,5 @@ int PQdelmin(int *queue, int *wt, int *queueaux)
 
     FixDown(queue, 0, espaco - 1, wt, queueaux);
     /* ultimo elemento não considerado na reordenação */
-    return queue[--espaco];
+    return queue[espaco - 1];
 }

@@ -4,11 +4,7 @@
 #include <string.h>
 #include <getopt.h>
 
-#include "socorro.h"
-#include "modos.h"
-#include "queueue.h"
 #include "tabuleiro.h"
-#include "dijk.h"
 
 /******************************************************************************
  *

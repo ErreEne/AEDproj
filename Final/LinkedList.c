@@ -1,3 +1,6 @@
+
+/*RETIRADO DO LABORATORIO E ADAPTADO*/
+
 /******************************************************************************
  * NAME
  *      LinkedList.c
@@ -91,7 +94,7 @@ void freeLinkedList(LinkedList *first)
 {
     LinkedList *aux, *next;
 
-    /* Ciclo desde o primeiro ao ultimo elemento           */
+    /* Ciclo desde o primeiro ao ultimo elemento*/
     for (aux = first; aux != NULL; aux = next)
     {
         next = aux->next; /* Vê o próximo nó */

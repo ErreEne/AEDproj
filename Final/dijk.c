@@ -5,9 +5,7 @@
 #include <limits.h>
 
 #include "socorro.h"
-#include "modos.h"
 #include "queueue.h"
-#include "tabuleiro.h"
 #include "dijk.h"
 
 #include "LinkedList.h"
@@ -41,118 +39,108 @@ struct LinkedListStruct
     int colunamc;
 };
 
-/*
- *  Função:
+/******************************************************************************
+ * Djikstra()
  *
+ * Arguments: pointer para o Grafo, salachegada,pointer para o output
+ * Returns:
+ * Side-Effects: none
  *
- *  Descrição:
- *
- *
- *  Argumentos:
- *
- *
- *  Retorna:
- *      void
- */
+ * Description: Realiza todo o algoritmo de procura de Djikstra
+ *****************************************************************************/
 
-void GRAPHpfs(Grafo *G, int salachegada, FILE *fpOut)
+void Dijkstra(Grafo *G, int salachegada, FILE *fpOut)
 {
-    int v, w, solu, *queue, *st, *wt, *queueaux, aux;
+    int v, w, solu, *queue, *melhorsala, *menorcusto, *queueaux, aux, espaco = 0;
     queue = (int *)calloc(G->Vertices, sizeof(int));
     if (queue == NULL)
         exit(0);
     queueaux = (int *)malloc(G->Vertices * sizeof(int));
     if (queueaux == NULL)
         exit(0);
-    st = (int *)malloc(sizeof(int) * G->Vertices);
-    if (st == NULL)
+    melhorsala = (int *)malloc(sizeof(int) * G->Vertices);
+    if (melhorsala == NULL)
         exit(0);
-    wt = (int *)malloc(sizeof(int) * G->Vertices);
-    if (wt == NULL)
+    menorcusto = (int *)malloc(sizeof(int) * G->Vertices);
+    if (menorcusto == NULL)
         exit(0);
     LinkedList *t;
-    PQinit(G->Vertices, queue, G->Vertices, queueaux);
     for (v = 0; v < G->Vertices; v++)
     {
-        st[v] = -1;
-        wt[v] = __INT_MAX__;
+        melhorsala[v] = -1;
+        menorcusto[v] = __INT_MAX__;
         queueaux[v] = -1;
     }
 
-    wt[salachegada] = 0;
-
-    PQinsert(salachegada, queue, wt, G->Vertices, queueaux, salachegada);
-    while (!IsEmpty())
+    menorcusto[salachegada] = 0;
+    /*insere a 1a posição, que neste caso será a sala de chegada já que iremos tentar encontrar o caminho mais barato até a sala inicial*/
+    PQinsert(salachegada, queue, menorcusto, G->Vertices, queueaux, salachegada, espaco);
+    espaco++;
+    while (!IsEmpty(espaco))
     {
-        v = PQdelmin(queue, wt, queueaux);
+        v = PQdelmin(queue, menorcusto, queueaux, espaco);
+        espaco--;
         for (t = G->adj[v]; t != NULL; t = t->next)
-            if (wt[w = t->vertice] > wt[v] + t->custo)
+            if (menorcusto[w = t->vertice] > menorcusto[v] + t->custo)
             {
-                wt[w] = wt[v] + t->custo; // guardar custo
+                menorcusto[w] = menorcusto[v] + t->custo;
                 if (queueaux[w] == -1)
                 {
-                    PQinsert(w, queue, wt, G->Vertices, queueaux, w);
+                    PQinsert(w, queue, menorcusto, G->Vertices, queueaux, w, espaco); /*inserir pela primeira vez*/
+                    espaco++;
                 }
                 else
                 {
 
                     aux = queueaux[w];
-                    FixUp(queue, aux, wt, queueaux, w);
+                    FixUp(queue, aux, menorcusto, queueaux, w); /*Se o valor já existe na queue, reoordenar com o novo custo*/
                 }
 
-                st[w] = v; // guardar sitio mais "barato"
+                melhorsala[w] = v;
             }
     }
     free(queue);
     free(queueaux);
-    if (st[0] == -1)
+    if (melhorsala[0] == -1)
     {
         fprintf(fpOut, "-1");
-        free(st);
-        free(wt);
+        free(melhorsala);
+        free(menorcusto);
     }
     else
     {
-        solu = retirarsolucao(0, wt, st);
+        solu = retirarsolucao(0, menorcusto, melhorsala);
         fprintf(fpOut, "%d\n", solu);
-        caminho(G, salachegada, wt, st, fpOut);
-        free(st);
-        free(wt);
+        caminho(G, salachegada, menorcusto, melhorsala, fpOut);
+        free(melhorsala);
+        free(menorcusto);
     }
 }
 
-/*
- *  Função:
- *    retirarsolucao
+/******************************************************************************
+ * retirarsolucao()
  *
- *  Descrição:
+ * Arguments: salachegada, wt, st
+ * Returns: wt[salachegada]
+ * Side-Effects: none
  *
- *
- *  Argumentos:
- *
- *
- *  Retorna:
- *
- */
+ * Description: retorna um valor do wt
+ *****************************************************************************/
 
 int retirarsolucao(int salachegada, int *wt, int *st)
 {
     return wt[salachegada];
 }
 
-/*
- *  Função:
- *    caminho
+/******************************************************************************
+ * caminho()
  *
- *  Descrição:
+ * Arguments: Pointer para o Grafo, salachegada, wt, st, pointer para o output
+ * Returns: 0
+ * Side-Effects: none
  *
- *
- *  Argumentos:
- *
- *
- *  Retorna:
- *      void
- */
+ * Description: Dá fprintf do caminho das salas em sequência
+ *****************************************************************************/
 
 void caminho(Grafo *G, int salachegada, int *wt, int *st, FILE *fpOut)
 {
