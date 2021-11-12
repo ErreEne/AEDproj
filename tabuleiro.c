@@ -72,7 +72,7 @@ struct LinkedListStruct
 
 void criartabuleiro(FILE *fpIn, FILE *fpOut)
 {
-    int solu, aux1, i, **tabuleiro, li, ci, tja, l2i, c2i, npi, tpi, *id, salas, salascounter = -1, salachegada;
+    int aux1, i, **tabuleiro, li, ci, tja, l2i, c2i, npi, tpi, *id, salas, salascounter = -1, salachegada;
     while ((fscanf(fpIn, "%d %d ", &li, &ci) == 2)) /*Verifica se existe mais algum tabuleiro*/
     {
 
