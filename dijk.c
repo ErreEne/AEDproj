@@ -93,16 +93,6 @@ void GRAPHpfs(Grafo *G, int salachegada, FILE *fpOut)
 
                     aux = queueaux[w];
                     FixUp(queue, aux, wt, queueaux, w);
-
-                    /* (int i = 0; i < espaco; i++)
-                    {
-                        if (queue[i] == t->vertice)
-                        {
-                            FixUp(queue, espaco, wt);
-                            break;
-                        }
-                    }
-                */
                 }
 
                 st[w] = v; // guardar sitio mais "barato"
@@ -113,15 +103,17 @@ void GRAPHpfs(Grafo *G, int salachegada, FILE *fpOut)
     if (st[0] == -1)
     {
         fprintf(fpOut, "-1");
-        exit(0);
+        free(st);
+        free(wt);
     }
-
-    solu = retirarsolucao(0, wt, st);
-    // meter fprintf aqui
-    fprintf(fpOut, "%d\n", solu);
-    caminho(G, salachegada, wt, st, fpOut);
-    free(st);
-    free(wt);
+    else
+    {
+        solu = retirarsolucao(0, wt, st);
+        fprintf(fpOut, "%d\n", solu);
+        caminho(G, salachegada, wt, st, fpOut);
+        free(st);
+        free(wt);
+    }
 }
 
 /*
@@ -200,68 +192,3 @@ void caminho(Grafo *G, int salachegada, int *wt, int *st, FILE *fpOut)
         }
     }
 }
-/*while (aux != 0)
-{
-    aux = st[aux];
-    oraganizado[numpartida] = aux;
-    numpartida++;
-}
-for (i = 0; i < numpartida; i++)
-{
-    printf("%d ", oraganizado[i]);
-}
-printf("\n");
-
-printf("%d\n", numpartida);
-for (i = numpartida - 1; i != 0; i--)
-{
-    for (lista = G->adj[oraganizado[i]]; lista != NULL; lista = lista->next)
-    {
-        if (lista->vertice == oraganizado[i - 1])
-        {
-            break;
-        }
-    }
-    printf(" %d %d %d\n", lista->linhamc + 1, lista->colunamc + 1, lista->custo);
-}
-for (lista = G->adj[0]; lista != NULL; lista = lista->next)
-{
-    if (lista->vertice == oraganizado[i])
-    {
-        break;
-    }
-}
-printf(" %d %d %d\n", lista->linhamc + 1, lista->colunamc + 1, lista->custo);
-while (aux1 != 0)
-{
-    if (aux == -1)
-    {
-        aux1 = st[salachegada];
-        st[salachegada] = aux;
-        aux = salachegada;
-    }
-    else
-    {
-        salachegada = aux1;
-        aux1 = st[salachegada];
-        st[salachegada] = aux;
-        aux = salachegada;
-    }
-}
-for (int i = 0; i < G->Vertices; i++)
-{
-    printf(" %d ", st[i]);
-}
-
-for (aux1 = 0; st[aux1] != -1;)
-{
-    aux1 = st[aux1];
-    for (lista = G->adj[aux1]; lista != NULL; lista = lista->next)
-    {
-        if (lista->vertice == aux1)
-        {
-            printf("%d %d %d\n", lista->linhamc, lista->colunamc, lista->custo);
-            break;
-        }
-    }
-}*/
