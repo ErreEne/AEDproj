@@ -127,13 +127,6 @@ void criarligacao(Grafo *estr, int vertice1, int vertice2, int custo, int linha,
     estr->adj[vertice2] = insertSortedLinkedList(estr->adj[vertice2], vertice1, custo, linha, coluna);
 }
 
-/*void montargraph(Grafo *estr, int salas, int vertice1, int vertice2)
-{
-    int i, j;
-    Item aux;
-    criarligacao(estr, i, j, aux);
-}*/
-
 /*
  *  Função:
  *    compareItems
@@ -252,22 +245,6 @@ void grafotime(int salas, int **tabuleiro, int li, int ci, int salachegada, FILE
         exit(0);
     estr = criargarph(salas, estr);
     grafonightmare(estr, salas, tabuleiro, li, ci);
-    /*i = 0;
-    while (i < estr->Vertices)
-    {
-        aux2 = estr->adj[i];
-        while (aux2 != NULL)
-        {
-            aux1 = getItemLinkedList(aux2);
-            aux = getcustoLinkedList(aux2);
-            printf("%d:%d ", aux1, aux);
-            aux2 = getNextNodeLinkedList(aux2);
-        }
-        printf("-1\n");
-        i++;
-    }
-
-    exit(0);*/
     free(tabuleiro);
     GRAPHpfs(estr, salachegada, fpOut);
     freeGraph(estr);
