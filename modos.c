@@ -17,11 +17,10 @@
 #include "header.h"
 
 /******************************************************************************
- * A1 ()
+ * vertipo ()
  *
- * Arguments: tabuleiro
- * Returns: -2
- * Side-Effects: none
+ * Arguments: 
+ * Returns: 
  *
  * Description: Identifica o tipo de célula, modo A1
  *****************************************************************************/
@@ -140,26 +139,22 @@ int procura(int **tabuleiro, int l1i, int c1i, int li, int ci, char tj[3])
 }
 
 /******************************************************************************
- * A6 ()
+ * soupintor()
  *
  * Arguments: tabela, li, ci, l1i, c1i, l2i, c2i
  * Returns: 0
  * Side-Effects: none
  *
- * Description: Modo A6
+ * Description: Modo A6, pintura das salas através da conectividade
  *****************************************************************************/
 
 int *soupintor(int **tabela, int li, int ci, int *id)
 {
-    int aux, aux1, *sz, i, j, p, q, x, t, ij, ji;
-    sz = (int *)malloc(li * ci * sizeof(int));
-    if (sz == NULL)
-        exit(0);
+    int aux, aux1, i, j, p, q, x, t, ij, ji;
 
     for (aux = 0; aux < li * ci; aux++)
     {
         id[aux] = aux;
-        sz[aux] = 1;
     }
 
     for (i = 0; i < li; i++) /*irá analisar todas as peças do tabuleiro, e se tiver as condições
@@ -185,17 +180,15 @@ int *soupintor(int **tabela, int li, int ci, int *id)
                     else
                     {
 
-                        if (sz[aux] < sz[aux1])
+                        if (aux < aux1)
                         {
-                            id[aux] = aux1;
-                            sz[aux1] += sz[aux];
-                            t = aux1;
+                            id[aux1] = aux;
+                            t = aux;
                         }
                         else
                         {
-                            id[aux1] = aux;
-                            sz[aux] += sz[aux1];
-                            t = aux;
+                            id[aux] = aux1;
+                            t = aux1;
                         }
                         for (ij = p; ij != id[ij]; ij = x)
                         {
@@ -228,18 +221,15 @@ int *soupintor(int **tabela, int li, int ci, int *id)
                     else
                     {
 
-                        if (sz[aux] < sz[aux1])
+                        if (aux < aux1)
                         {
-                            id[aux] = aux1;
-                            sz[aux1] += sz[aux];
-                            t = aux1;
+                            id[aux1] = aux;
+                            t = aux;
                         }
                         else
                         {
-                            // id[aux1] = id[aux1 - ci];
-                            id[aux1] = aux;
-                            sz[aux] += sz[aux1];
-                            t = aux;
+                            id[aux] = aux1;
+                            t = aux1;
                         }
                         for (ij = p; ij != id[ij]; ij = x)
                         {
@@ -257,8 +247,6 @@ int *soupintor(int **tabela, int li, int ci, int *id)
             }
         }
     }
-
-    free(sz);
     return id;
 }
 
@@ -332,10 +320,10 @@ int quebravel(int **tabuleiro, int l1i, int c1i, int li, int ci)
  *
  *
  *  Argumentos:
- *
+ *      Pointer para o id, li, ci, tabela
  *
  *  Retorna:
- *      o número de salas
+ *      
  */
 
 int contarsalas(int *id, int li, int ci, int **tabela)
